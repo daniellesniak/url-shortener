@@ -27,62 +27,88 @@
 
 		<div class="columns">
 			<div class="column">
-				<div class="tabs is-centered">
+				<div class="tabs is-centered is-toggle">
 				  <ul>
-				    <li class="is-active">
-				      <a>
+				    <li>
+				      <a href="{{ action('UrlController@statsv2', $id) }}">
 				        <span class="icon is-small"><i class="fa fa-calendar"></i></span>
 				        <span>All the time</span>
 				      </a>
 				    </li>
 				    <li>
-				      <a>
+				      <a href="{{ action('UrlController@statsv2', ['id' => $id, 'range' => '24h']) }}">
 				        <span class="icon is-small"><i class="fa fa-circle-thin"></i></span>
-				        <span>Today</span>
+				        <span>24 hours</span>
 				      </a>
 				    </li>
 				    <li>
-				      <a>
+				      <a href="{{ action('UrlController@statsv2', ['id' => $id, 'range' => '48h']) }}">
 				        <span class="icon is-small"><i class="fa fa-angle-left"></i></span>
-				        <span>Yesterday</span>
+				        <span>48 hours</span>
 				      </a>
 				    </li>
 				    <li>
-				      <a>
+				      <a href="{{ action('UrlController@statsv2', ['id' => $id, 'range' => 'week']) }}">
 				        <span class="icon is-small"><i class="fa fa-angle-double-left"></i></span>
 				        <span>1 week</span>
 				      </a>
 				    </li>
 				    <li>
-				      <a>
+				      <a href="{{ action('UrlController@statsv2', ['id' => $id, 'range' => 'month']) }}">
 				        <span class="icon is-small"><i class="fa fa-angle-double-left"></i><i class="fa fa-angle-double-left"></i></span>
 				        <span>1 month</span>
 				      </a>
+				    </li>
+				    <li>
+				    	<a href="#" onclick="hideShowCustomRange()" id="customRangeBtn">
+					        <span class="icon is-small"><i class="fa fa-arrows-h"></i></span>
+					        <span>Cusom range</span>
+				    	</a>
 				    </li>
 				  </ul>
 				</div>
 			</div>
 		</div>
 
+		<div class="columns is-hidden" id="customRange">
+			<div class="column">
+				<div class="columns">
+					<div class="column"></div>
+					<form class="control is-horizontal">
+					    <div class="control is-grouped">
+					    <p class="control is-expanded">
+					      <input class="input" type="date" placeholder="From">
+					    </p>
+					    <p class="control is-expanded">
+					      <input class="input" type="date" placeholder="To">
+					    </p>
+					  	</div>
+					  	<a class="button is-info" style="margin-left: 8px;">Submit</a>
+					</form>
+					<div class="column"></div>
+				</div>
+			</div>
+		</div>
+
 		<div class="columns">
 			<div class="column">
-				<div class="message">
+				<div class="message is-info">
 					<div class="message-header">
 						<div class="columns">
 							<div class="column is-2">
-								<i class="fa fa-linux"></i> By OS
+								<i class="fa fa-linux"></i> by OS
 							</div>
 
 							<div class="column is-2">
-								<i class="fa fa-internet-explorer"></i> By Browser
+								<i class="fa fa-internet-explorer"></i> by Browser
 							</div>
 
 							<div class="column is-3">
-								<i class="fa fa-globe"></i> By Country
+								<i class="fa fa-globe"></i> by Country
 							</div>
 
 							<div class="column is-5">
-								<i class="fa fa-external-link"></i> By Referer
+								<i class="fa fa-external-link"></i> by Referer
 							</div>
 						</div>
 					</div>
@@ -144,4 +170,14 @@
 			</div>
 		</div>
 	</div>
+@endsection
+
+@section('scripts')
+	<script type="text/javascript">
+		 function hideShowCustomRange()
+		 {
+			 customRange = document.getElementById('customRange');
+			 customRange.classList.toggle('is-hidden');
+		 }
+	</script>
 @endsection

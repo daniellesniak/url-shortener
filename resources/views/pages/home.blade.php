@@ -24,9 +24,9 @@
 				      </h1>
 				      <h2 class="subtitle">
 					      <form action="{{ @action('UrlController@store') }}" method="post">
+					      {{ csrf_field() }}
 					      	<p class="control has-icon has-addons">
-					      		{{ csrf_field() }}
-					      		<input class="input is-danger is-medium is-expanded" type="text" placeholder="https://google.com/" name="url" autocomplete="off">
+					      		<input class="input is-danger is-medium is-expanded" type="text" value="http://google.com/" placeholder="https://google.com/" name="url" autocomplete="off">
 					      		<i class="fa fa-link"></i>
 					      		<input type="submit" class="button is-danger is-medium" value="Short me!">
 					      	</p>
@@ -84,7 +84,7 @@
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>
 
-	<script>
+	<script type="text/javascript">
 		var cb = new Clipboard('.clipboard');
 
 		cb.on('success', function(e) {

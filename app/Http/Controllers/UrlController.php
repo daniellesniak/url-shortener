@@ -102,19 +102,54 @@ class UrlController extends Controller
     * @param $id
     * @return Response
     */
-    public function statsv2($id)
+    public function statsv2(Request $request, $id)
     {
     	$shortenUrl = action("UrlController@redirect", $id);
     	
     	$url = Url::where('string_id', $id)->first();
-    	$redirects_count = $url->stats()->count();
+    	
+        // set variables to default
+        $redirects_count = $url->stats()->count();
+        $allUrls = $url->stats()->get();
 
-    	$allUrls = $url->stats()->get();
+        if($request->input('range') != null)
+        {
+            $currentDate = Carbon::now();
+            $range = $request->input('range');
+            
+            switch($range)
+            {
+                case '24h':
+                    $allUrls = $url->stats()
+                    ->whereBetween('created_at', [Carbon::now()->subDay(), Carbon::now()])
+                    ->get();
+                    break;
+                case '48h':
+                    $allUrls = $url->stats()
+                    ->whereBetween('created_at', [Carbon::now()->subDays(2), Carbon::now()])
+                    ->get();
+                    break;
+                case 'week':
+                    $allUrls = $url->stats()
+                    ->whereBetween('created_at', [Carbon::now()->subWeek(), Carbon::now()])
+                    ->get();
+                    break;
+                case 'month':
+                    $allUrls = $url->stats()
+                    ->whereBetween('created_at', [Carbon::now()->subMonth(), Carbon::now()])
+                    ->get();
+                    break;
+                default:
+                    break;
+            }
+            $redirects_count = $allUrls->count();
+        }
 
-    	$platformArr = [];
+        $platformArr = [];
     	$browserArr = [];
     	$countryArr = [];
         $httpRefererArr = [];
+
     	foreach($allUrls as $singleUrl)
     	{	
     		array_push($platformArr, $singleUrl->platform);
@@ -132,7 +167,9 @@ class UrlController extends Controller
         $httpRefererArr = array_count_values($httpRefererArr);
 
     	return view('pages.statsv2', 
-    		['shortenUrl' => $shortenUrl,
+    		[
+             'id' => $id,
+             'shortenUrl' => $shortenUrl,
     		 'redirects' => $redirects_count,
     		 'platformStats' => $platformArr,
     		 'browserStats' => $browserArr,

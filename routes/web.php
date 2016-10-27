@@ -12,6 +12,7 @@
 */
 
 Route::get('/', 'HomeController@index');
+
 Route::post('/', 'UrlController@store');
 
 Route::get('/{id}', 'UrlController@redirect');
