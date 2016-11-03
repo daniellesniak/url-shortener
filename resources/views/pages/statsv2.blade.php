@@ -25,6 +25,7 @@
 			</div>
 		</div>	
 
+		{{-- Range Tabs --}}
 		<div class="columns">
 			<div class="column">
 				<div class="tabs is-centered is-toggle">
@@ -70,26 +71,28 @@
 			</div>
 		</div>
 
+		{{-- Custom Range Form --}}
 		<div class="columns is-hidden" id="customRange">
 			<div class="column">
 				<div class="columns">
 					<div class="column"></div>
-					<form class="control is-horizontal">
+					<form class="control is-horizontal" action="{{ url()->current() }}">
 					    <div class="control is-grouped">
 					    <p class="control is-expanded">
-					      <input class="input" type="date" placeholder="From">
+					      <input class="input" type="datetime-local" placeholder="From" name="from" placeholder="2016-10-10 00:00">
 					    </p>
 					    <p class="control is-expanded">
-					      <input class="input" type="date" placeholder="To">
+					      <input class="input" type="datetime-local" placeholder="To" name="to">
 					    </p>
 					  	</div>
-					  	<a class="button is-info" style="margin-left: 8px;">Submit</a>
+					  	<input type="submit" class="button is-info" style="margin-left: 8px;">
 					</form>
 					<div class="column"></div>
 				</div>
 			</div>
 		</div>
 
+		{{-- Redirects' Stats --}}
 		<div class="columns">
 			<div class="column">
 				<div class="message is-info">

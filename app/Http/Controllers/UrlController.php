@@ -112,36 +112,46 @@ class UrlController extends Controller
         $redirects_count = $url->stats()->count();
         $allUrls = $url->stats()->get();
 
+        // handle range
         if($request->input('range') != null)
         {
-            $currentDate = Carbon::now();
             $range = $request->input('range');
             
             switch($range)
             {
                 case '24h':
                     $allUrls = $url->stats()
-                    ->whereBetween('created_at', [Carbon::now()->subDay(), Carbon::now()])
-                    ->get();
+                        ->whereBetween('created_at', [Carbon::now()->subDay(), Carbon::now()])
+                        ->get();
                     break;
                 case '48h':
                     $allUrls = $url->stats()
-                    ->whereBetween('created_at', [Carbon::now()->subDays(2), Carbon::now()])
-                    ->get();
+                        ->whereBetween('created_at', [Carbon::now()->subDays(2), Carbon::now()])
+                        ->get();
                     break;
                 case 'week':
                     $allUrls = $url->stats()
-                    ->whereBetween('created_at', [Carbon::now()->subWeek(), Carbon::now()])
-                    ->get();
+                        ->whereBetween('created_at', [Carbon::now()->subWeek(), Carbon::now()])
+                        ->get();
                     break;
                 case 'month':
                     $allUrls = $url->stats()
-                    ->whereBetween('created_at', [Carbon::now()->subMonth(), Carbon::now()])
-                    ->get();
+                        ->whereBetween('created_at', [Carbon::now()->subMonth(), Carbon::now()])
+                        ->get();
                     break;
                 default:
                     break;
             }
+            
+            $redirects_count = $allUrls->count();
+        }
+
+        // handle custom range
+        if(($request->input('from') != null) && ($request->input('to') != null))
+        {
+            $allUrls = $url->stats()
+                ->whereBetween('created_at', [$request->input('from'), $request->input('to')])
+                ->get();
             $redirects_count = $allUrls->count();
         }
 
@@ -165,6 +175,12 @@ class UrlController extends Controller
     	$browserArr = array_count_values($browserArr);
     	$countryArr = array_count_values($countryArr);
         $httpRefererArr = array_count_values($httpRefererArr);
+
+		// Sort and reverse arrays
+		asort($platformArr); arsort($platformArr);
+		asort($browserArr); arsort($browserArr);
+		asort($countryArr); arsort($countryArr);
+		asort($httpRefererArr); arsort($httpRefererArr);
 
     	return view('pages.statsv2', 
     		[

@@ -178,7 +178,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Barryvdh\Debugbar\ServiceProvider::class, // debugbar
+        Barryvdh\Debugbar\ServiceProvider::class, // DebugBar
+        Orangehill\Iseed\IseedServiceProvider::class, // ISeed
 
     ],
 

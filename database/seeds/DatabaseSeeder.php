@@ -12,6 +12,11 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // $this->call(UsersTableSeeder::class);
+
+        #iseed_start
+
         $this->call(UrlStatsTableSeeder::class);
+
+        #iseed_end
     }
 }
