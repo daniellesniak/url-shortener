@@ -6,7 +6,6 @@
 	<section class="hero is-medium is-dark is-bold">
 	<div class="hero-body">
 	    <div class="container">
-
 	    	@if (count($errors) > 0)
 	    		@foreach ($errors->all() as $error)
 	    			<span class="tag is-danger is-small">
@@ -40,7 +39,8 @@
     </section>
 
     @if(isset($urlsData))
-	    <div class="container">
+	    <div class="container" style="margin-top: 20px">
+			<h1 class="title">Your shortenings</h1>
 	    	<table class="table">
 			  <thead>
 			    <tr>
@@ -70,6 +70,35 @@
 			  </tbody>
 			</table>
 	    </div>
+
+		{{-- Latest --}}
+		<div class="container">
+			<h1 class="title">Latest</h1>
+			<table class="table">
+				<thead>
+				<tr>
+					<th>Shorten URL</th>
+					<th>Original URL</th>
+					<th>Created</th>
+				</tr>
+				</thead>
+				<tbody>
+				@foreach($newestUrls as $newestUrl)
+					<tr>
+						<td>
+							<a href="{{ route('home')}}/{{ $newestUrl->string_id }}">{{ route('home') }}/{{ $newestUrl->string_id }}</a>
+						</td>
+						<td>
+							<a href="{{ $newestUrl->url }}">{{ $newestUrl->url }}</a>
+						</td>
+						<td>
+							{{ $carbon->instance($newestUrl->created_at)->diffForHumans() }}
+						</td>
+					</tr>
+				@endforeach
+				</tbody>
+			</table>
+		</div>
     @endif
 @endsection
 

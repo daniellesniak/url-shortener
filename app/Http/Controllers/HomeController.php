@@ -7,14 +7,17 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 
 use Carbon\Carbon;
+use App\Url;
 
 class HomeController extends Controller
 {
     public function index()
     {
+		$newest = Url::orderBy('created_at', 'desc')->paginate(5);
+
     	if(session('urlIDs') != null)
 		{
-			$url = new \App\Url;
+			$url = new Url;
 			$urlIDs = session('urlIDs');
 
 			$urlsData = [];
@@ -31,9 +34,9 @@ class HomeController extends Controller
 				]);
 			}
 
-			return view('pages.home', ['urlsData' => $urlsData]);
+			return view('pages.home', ['urlsData' => $urlsData, 'newestUrls' => $newest, 'carbon' => new Carbon()]);
 		}
 
-    	return view('pages.home');
+    	return view('pages.home', ['newestUrls' => $newest, 'carbon' => new Carbon()]);
     }
 }
