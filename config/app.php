@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => 'Laravel',
+    'name' => 'URL Shortener',
 
     /*
     |--------------------------------------------------------------------------
@@ -177,9 +177,6 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
-        Barryvdh\Debugbar\ServiceProvider::class, // DebugBar
-        Orangehill\Iseed\IseedServiceProvider::class, // ISeed
 
     ],
 

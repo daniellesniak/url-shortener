@@ -8,7 +8,6 @@
         "php": ">=5.6.4",
         "laravel/framework": "5.3.*",
         "donatj/phpuseragentparser": "*",
-        "barryvdh/laravel-debugbar": "^2.3",
         "orangehill/iseed": "dev-master"
 
     },
