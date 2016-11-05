@@ -16,6 +16,7 @@ use Carbon\Carbon;
 class UrlController extends Controller
 {
 	/**
+    * @desc Get url, validate and store it in database.
     * @param Request $request
     * @return Response
     */
@@ -27,7 +28,7 @@ class UrlController extends Controller
     		'url' => 'required|url'
     	]);
 
-    	$stringId = str_random(6);
+    	$stringId = str_random(6); // generate random string_id
 
     	// check if stringId is unique, if not it generates new id
     	while(true)
@@ -39,26 +40,21 @@ class UrlController extends Controller
     			break;
     	}
 
+        // create and store url to database
     	$urlMdl = new Url;
-    	
     	$urlMdl->url = $url;
     	$urlMdl->string_id = $stringId;
     	$urlMdl->save();
 
-    	session()->push('urlIDs', $urlMdl->string_id);
+    	session()->push('urlIDs', $urlMdl->string_id); // push string_id to the session (need to generate local history)
     	
-    	$completeUrl = url('/').'/'.$stringId;
+    	$shortenUrl = url('/').'/'.$stringId;
 
-    	return view('pages.shorten', ['shortenUrl' => $completeUrl]);
+    	return view('pages.shorten', ['shortenUrl' => $shortenUrl]);
     }
 
-    
-    /*
-    / Using phpuseragentparser to parse user agent
-    / https://github.com/donatj/PhpUserAgent
-    */
-
     /**
+    * @desc Store information about user to DB and redirect user.
     * @param $id
     * @return Response
     */

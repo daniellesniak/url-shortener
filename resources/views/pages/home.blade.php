@@ -40,6 +40,14 @@
 
     @if(isset($urlsData))
 	    <div class="container" style="margin-top: 20px">
+            {{-- Handle Message --}}
+            @if(session('message'))
+                <div class="notification {{ session('message')['message_class'] }}">
+                    <button class="delete" onclick="disposeMessage()"></button>
+                    {{ session('message')['message_text'] }}
+                </div>
+            @endif
+
 			<h1 class="title">Your shortenings</h1>
 	    	<table class="table">
 			  <thead>
@@ -64,7 +72,10 @@
 			    	{{-- All Redirects --}}
 			    	<td>{{ $singleUrl['redirects_count'] }}</td>
 			    	{{-- [statistics_button] --}}
-			    	<td><a title="Show statistics!" href="{{ url('/', [ $singleUrl['string_id'], 'stats']) }}" class="button is-small"><i class="fa fa-bar-chart"></i></a></td>
+			    	<td>
+                        <a title="Show statistics!" href="{{ url('/', [ $singleUrl['string_id'], 'stats']) }}" class="button is-small"><i class="fa fa-bar-chart"></i></a>
+                        <a title="Hide it!" href="{{ action('HomeController@hideUrl', $singleUrl['string_id']) }}" class="button is-small"><i class="fa fa-eye-slash"></i></a>
+                    </td>
 			    	</tr>
 			    @endforeach
 			  </tbody>
@@ -74,7 +85,10 @@
                 @if($urlPage['currentPage'] != 1 && $urlPage['currentPage'] != NULL)
                     <a href="{{ action('HomeController@index', ['page' => $urlPage['previousPage']]) }}" class="button">Previous</a>
                 @endif
-                <a class="button">Next</a>
+
+				@if($urlPage['currentPage'] < $urlPage['lastPage'])
+                    <a class="button" href="{{ action('HomeController@index', ['page' => $urlPage['nextPage']]) }}">Next</a>
+                @endif
             </nav>
 	    </div>
 
@@ -116,6 +130,12 @@
 			var errorTag = document.getElementsByClassName('tag');
 			errorTag[0].style.display = 'none';
 		}
+
+        function disposeMessage()
+        {
+            var message = document.getElementsByClassName('notification');
+            message[0].style.display = 'none';
+        }
 	</script>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>

@@ -8,6 +8,7 @@ use App\Http\Requests;
 
 use Carbon\Carbon;
 use App\Url;
+use Illuminate\Support\Facades\Response;
 
 class HomeController extends Controller
 {
@@ -47,6 +48,9 @@ class HomeController extends Controller
 				$urlsCollection = $urlsCollection->forPage(1, 5);
 
             $currentPage = $request->input('page');
+            if($currentPage == null)
+                $currentPage = 1;
+
 			return view('pages.home',
                 ['urlsData' => $urlsCollection,
                     'urlPage' => ['pages' => $urlPages, 'currentPage' => $currentPage,
@@ -55,5 +59,21 @@ class HomeController extends Controller
 		}
 
     	return view('pages.home', ['newestUrls' => $newest, 'carbon' => new Carbon()]);
+    }
+
+    /**
+     * @param $string_id
+     * @return Response
+     */
+    public function hideUrl($string_id)
+    {
+        if (\Session::has( 'urlIDs' ) && is_array(\Session::get('urlIDs'))) {
+            $urlIDs = \Session::get('urlIDs');
+            $key = array_search($string_id, $urlIDs);
+            unset($urlIDs[$key]);
+
+            session(['urlIDs' => $urlIDs]);
+        }
+        return redirect()->route('home')->with('message', ['message_text' => 'URL has been hidden successfully!', 'message_class' => 'is-success']);
     }
 }
