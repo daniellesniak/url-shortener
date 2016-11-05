@@ -11,7 +11,7 @@ use App\Url;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
 		$newest = Url::orderBy('created_at', 'desc')->paginate(5);
 
@@ -34,7 +34,24 @@ class HomeController extends Controller
 				]);
 			}
 
-			return view('pages.home', ['urlsData' => $urlsData, 'newestUrls' => $newest, 'carbon' => new Carbon()]);
+			// Create collection form $urlsData and reverse to show newest first
+			$urlsCollection = collect($urlsData)->reverse();
+
+            // Calculate pages for urls
+            $urlPages = ceil($urlsCollection->count() / 5);
+
+            if($request->has('page') && is_numeric($request->input('page')))
+			{
+				$urlsCollection = $urlsCollection->forPage($request->input('page'), 5);
+			} else
+				$urlsCollection = $urlsCollection->forPage(1, 5);
+
+            $currentPage = $request->input('page');
+			return view('pages.home',
+                ['urlsData' => $urlsCollection,
+                    'urlPage' => ['pages' => $urlPages, 'currentPage' => $currentPage,
+                        'previousPage' => $currentPage - 1, 'nextPage' => $currentPage + 1, 'lastPage' => $urlPages]
+                    , 'newestUrls' => $newest, 'carbon' => new Carbon()]);
 		}
 
     	return view('pages.home', ['newestUrls' => $newest, 'carbon' => new Carbon()]);

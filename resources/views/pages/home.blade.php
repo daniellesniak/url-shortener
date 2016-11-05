@@ -25,7 +25,7 @@
 					      <form action="{{ @action('UrlController@store') }}" method="post">
 					      {{ csrf_field() }}
 					      	<p class="control has-icon has-addons">
-					      		<input class="input is-danger is-medium is-expanded" type="text" value="http://google.com/" placeholder="https://google.com/" name="url" autocomplete="off">
+					      		<input class="input is-danger is-medium is-expanded" type="text" placeholder="{{ route('home') }}" name="url" autocomplete="off">
 					      		<i class="fa fa-link"></i>
 					      		<input type="submit" class="button is-danger is-medium" value="Short me!">
 					      	</p>
@@ -69,6 +69,13 @@
 			    @endforeach
 			  </tbody>
 			</table>
+            {{-- Pagination --}}
+            <nav class="pagination">
+                @if($urlPage['currentPage'] != 1 && $urlPage['currentPage'] != NULL)
+                    <a href="{{ action('HomeController@index', ['page' => $urlPage['previousPage']]) }}" class="button">Previous</a>
+                @endif
+                <a class="button">Next</a>
+            </nav>
 	    </div>
 
 		{{-- Latest --}}
