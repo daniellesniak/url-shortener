@@ -21,9 +21,7 @@
 	<body>
 		<div class="container-fluid">
 			<!-- Header -->
-			<div class="container">
-				@include('includes.header')
-			</div>
+			@include('includes.header')
 			
 			@yield('content-fluid')
 

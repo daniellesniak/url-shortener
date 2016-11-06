@@ -3,15 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
-
 use App\Url;
-
 use App\UrlStat;
-
 use Carbon\Carbon;
-
+use App\Helpers\Geolocation;
 
 class UrlController extends Controller
 {
@@ -60,36 +56,23 @@ class UrlController extends Controller
     */
     public function redirect($id) 
     {
-    	$ua = parse_user_agent(); // $ua = Parsed User Agent
-    	$platform = $ua['platform'];
-    	$browser = $ua['browser'];
+    	$ua = parse_user_agent(); // parsed user agent
 
-    	/* 
-    	/ Get geolocation by ip with freegeoip.net api
-    	/ 10,000 requests/hour
-    	*/
-        $geoloactionJson = getGeolocationJson();
+        $geo = new Geolocation; // default geolocation by ip provider: http://freegeoip.net/
 
-		$decodedJson = json_decode($geoloactionJson);
-		
-		$ip = $decodedJson->ip;
-		$country_code = $decodedJson->country_code;
-		$country_name = $decodedJson->country_name;
-		
-		$http_referer = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : null;
-		if(isset($_SERVER['HTTP_REFERER']))
-  	  		$http_referer = $_SERVER['HTTP_REFERER'];
+        $userInfo['platform'] = $ua['platform'];
+        $userInfo['browser'] = $ua['browser'];
+		$userInfo['ip'] = $geo->ip;
+		$userInfo['country_code'] = $geo->country_code;
+		$userInfo['country_name'] = $geo->country_name;
+		$userInfo['http_referer'] = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : null;
+
+        if(isset($_SERVER['HTTP_REFERER']))
+            $userInfo['http_referer'] = $_SERVER['HTTP_REFERER'];
 
 		$url = Url::where('string_id', '=', $id)->first();
 		
-		$urlStat = $url->stats()->create([
-			'platform' => $platform,
-			'browser' => $browser,
-			'ip' => $ip,
-			'country_name' => $country_name,
-			'country_code' => $country_code,
-			'http_referer' => $http_referer
-		]);
+		$urlStat = $url->stats()->create($userInfo);
 
 		return redirect($url->url, 301);
     }

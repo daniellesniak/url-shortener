@@ -1,6 +1,6 @@
 @extends('layouts.base')
 
-@section('title', 'Your shorten URL is ready!')
+@section('title', "Statistics ($id)")
 
 @section('stylesheets')
 	{{-- Flag Icons --}}
@@ -8,7 +8,7 @@
 @endsection
 
 @section('content-fluid')
-	<div class="container">
+	<div class="container" style="margin-top: 30px;">
 		<div class="columns">
 			<div class="column has-text-centered">
 				<h1 class="title"><i class="fa fa-bar-chart"></i> STATISTICS</h1>
