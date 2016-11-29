@@ -17,6 +17,8 @@ class CreateUrlTable extends Migration
             $table->increments('id');
             $table->string('url');
             $table->string('string_id')->unique();
+            $table->boolean('is_private')->nullable()->default(null);
+            $table->string('private_password')->nullable()->default(null);
             $table->timestamps();
         });
     }

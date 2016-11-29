@@ -21,7 +21,9 @@ class UrlController extends Controller
         $url = $request->input('url');
 
     	$this->validate($request, [
-    		'url' => 'required|url'
+    		'url' => 'required|url',
+            'isPrivate' => 'nullable',
+            'privatePassword' => 'required_if:isPrivate,on|min:4|max:10|alpha_num'
     	]);
 
     	$stringId = str_random(6); // generate random string_id
@@ -36,12 +38,19 @@ class UrlController extends Controller
     			break;
     	}
 
+        // check if is private
+        $is_private = ($request->input('isPrivate') == 'on') ? true : false;
+        $private_password = ($is_private == true || $is_private != null) ? $request->input('privatePassword') : null;
+
         // create and store url to database
     	$urlMdl = new Url;
     	$urlMdl->url = $url;
     	$urlMdl->string_id = $stringId;
+        $urlMdl->is_private = $is_private;
+        $urlMdl->private_password = $private_password;
     	$urlMdl->save();
 
+        // add url id to session (used to create local history of shortened urls)
     	session()->push('urlIDs', $urlMdl->string_id); // push string_id to the session (need to generate local history)
     	
     	$shortenUrl = url('/').'/'.$stringId;
