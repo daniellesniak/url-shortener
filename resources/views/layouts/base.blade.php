@@ -4,9 +4,11 @@
 		<title>URL Shortener - @yield('title')</title>
 		
 		<!-- Bulma CSS -->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.1/css/bulma.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.1/css/bulma.min.css">
 		<!-- Font Awesome -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+		<!-- Custom CSS -->
+		<link rel="stylesheet" href="{{ asset('/css/app.css') }}">
 
 		<!-- Begin Cookie Consent (message about cookies policy) -->
 		<script type="text/javascript">
@@ -29,4 +31,6 @@
 		</div>
 		@yield('scripts')
 	</body>
+
+	<script src="{{ asset('/js/app.js') }}"></script>
 </html>

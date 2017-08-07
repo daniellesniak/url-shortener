@@ -14,7 +14,7 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-		$newest = Url::orderBy('created_at', 'desc')->paginate(5);
+		$newestShortens = Url::orderBy('created_at', 'desc')->paginate(5);
 
     	if(session('urlIDs') != null)
 		{
@@ -42,9 +42,8 @@ class HomeController extends Controller
             $urlPages = ceil($urlsCollection->count() / 5);
 
             if($request->has('page') && is_numeric($request->input('page')))
-			{
-				$urlsCollection = $urlsCollection->forPage($request->input('page'), 5);
-			} else
+                $urlsCollection = $urlsCollection->forPage($request->input('page'), 5);
+            else
 				$urlsCollection = $urlsCollection->forPage(1, 5);
 
             $currentPage = $request->input('page');
@@ -55,10 +54,10 @@ class HomeController extends Controller
                 ['urlsData' => $urlsCollection,
                     'urlPage' => ['pages' => $urlPages, 'currentPage' => $currentPage,
                         'previousPage' => $currentPage - 1, 'nextPage' => $currentPage + 1, 'lastPage' => $urlPages]
-                    , 'newestUrls' => $newest, 'carbon' => new Carbon()]);
+                    , 'newestShortens' => $newestShortens, 'carbon' => new Carbon()]);
 		}
 
-    	return view('pages.home', ['newestUrls' => $newest, 'carbon' => new Carbon()]);
+    	return view('pages.home', ['newestShortens' => $newestShortens, 'carbon' => new Carbon()]);
     }
 
     /**
