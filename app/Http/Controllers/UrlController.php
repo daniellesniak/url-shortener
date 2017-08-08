@@ -16,15 +16,9 @@ class UrlController extends Controller
     * @param Request $request
     * @return Response
     */
-    public function store(Request $request)
+    public function store(\App\Http\Requests\ShortenRequest $request)
     {
-        $url = $request->input('url');
-
-    	$this->validate($request, [
-    		'url' => 'required|url',
-            'isPrivate' => 'nullable',
-            'privatePassword' => 'required_if:isPrivate,on|min:4|max:10|alpha_num'
-    	]);
+        $url = $request->input('protocol') . $request->input('url');
 
     	$stringId = str_random(6); // generate random string_id
 

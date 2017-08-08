@@ -16,34 +16,41 @@
 				<div class="column is-two-thirds">
 					<h1 class="title">What do you want to short?</h1>
 					<form action="{{ @action('UrlController@store') }}" method="post" class="field has-addons">
+						{{--  Csrf protection  --}}
 						{{ csrf_field() }}
 						<p class="control">
+							{{-- Protocol Select --}}
 							<span class="select is-large">
-								<select>
-									<option value="http" style="color: red">http://</option>
-									<option value="https" style="color: green" selected>https://</option>
+								<select name="protocol_select">
+									<option value="http://" style="color: red">http://</option>
+									<option value="https://" style="color: green" selected>https://</option>
 								</select>
 							</span>
 						</p>
 						<p class="control">
+							{{--  Url Input (without protocol)  --}}
 							<input class="input is-large is-expanded" type="text" 
 								placeholder="{{ str_replace(['http://', 'https://'], '', route('home')) }}" name="url" autocomplete="off">
 						</p>
-						<input type="hidden" name="is_private" value="false" id="is_private">
+						{{--  is_private Hidden  --}}
+						<input type="hidden" name="is_private" value="false">
+						{{-- url_with_protocol Hidden --}}
+						<input type="hidden" name="url_with_protocol" value="">
 						<p class="control">
-							{{--  <i class="fa fa-link"></i>  --}}
-							<button class="button is-danger is-large" 
+							{{--  Is Private button  --}}
+							<button type="button" class="button is-info is-large" 
 								value="Short me!" id="is-private"><i class="fa fa-user-secret"></i></button>
 						</p>
+						{{--  Submit  --}}
 						<p class="control">
-							<input type="submit" class="button is-danger is-large" value="Short me!">
+							<input type="submit" class="button is-info is-large" value="Short me!">
 						</p>
 					</form>
 
 				</div>
 			</div>
 			<p class="is-visible" id="is_private_info">
-				<span class="icon"><i class="fa fa-user-secret"></i></span> - your shorten will be private, it means it will be not in Newest section
+				<span class="icon"><i class="fa fa-user-secret"></i></span> - private shorten (it means it will be not visible in Newest section at the Homepage)
 			</p>
 		</div>
 	</div>
