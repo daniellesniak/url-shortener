@@ -18,34 +18,37 @@ class UrlController extends Controller
     */
     public function store(\App\Http\Requests\ShortenRequest $request)
     {
-        $url = $request->input('protocol') . $request->input('url');
+        $url = $request->input('url');
+        $protocol = $request->input('protocol_select');
+        $fullUrl = $protocol . $url;
+        $is_private = $request->input('is_private');
+        $custom_alias = $request->input('custom_alias');
 
-    	$stringId = str_random(6); // generate random string_id
-
-    	// check if stringId is unique, if not it generates new id
-    	while(true)
+        if($custom_alias == null || $custom_alias == '')
     	{
-    		if(Url::where('string_id', $stringId)->first() != null) {
-    			$stringId = bin2hex(random_bytes(3));
-    		}
-    		else
-    			break;
-    	}
-
-        // check if is private
-        $is_private = ($request->input('isPrivate') == 'on') ? true : false;
-        $private_password = ($is_private == true || $is_private != null) ? $request->input('privatePassword') : null;
+            $stringId = str_random(6); // generate random string_id
+            // check if stringId is unique, if not it generates new id
+            while(true)
+            {
+                if(Url::where('string_id', $stringId)->first() != null) {
+                    $stringId = bin2hex(random_bytes(3));
+                }
+                else
+                    break;
+            }
+        } else
+            $stringId = $custom_alias;
 
         // create and store url to database
-    	$urlMdl = new Url;
-    	$urlMdl->url = $url;
-    	$urlMdl->string_id = $stringId;
-        $urlMdl->is_private = $is_private;
-        $urlMdl->private_password = $private_password;
-    	$urlMdl->save();
+    	$urlModel = new Url;
+    	$urlModel->url = $url;
+        $urlModel->protocol = $protocol;
+    	$urlModel->string_id = $stringId;
+        $urlModel->is_private = $is_private;
+    	$urlModel->save();
 
         // add url id to session (used to create local history of shortened urls)
-    	session()->push('urlIDs', $urlMdl->string_id); // push string_id to the session (need to generate local history)
+    	session()->push('urlIDs', $urlModel->string_id); // push string_id to the session (need to generate local history)
     	
     	$shortenUrl = url('/').'/'.$stringId;
 
@@ -77,7 +80,7 @@ class UrlController extends Controller
 		
 		$urlStat = $url->stats()->create($userInfo);
 
-		return redirect($url->url, 301);
+		return redirect($url->protocol . $url->url, 301);
     }
 
     /**

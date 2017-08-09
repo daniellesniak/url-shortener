@@ -14,18 +14,21 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-		$newestShortens = Url::orderBy('created_at', 'desc')->paginate(5);
+		$newestShortens = Url::orderBy('created_at', 'desc')->where('is_private', false)->paginate(5);
 
     	if(session('urlIDs') != null)
 		{
-			$url = new Url;
 			$urlIDs = session('urlIDs');
 
 			$urlsData = [];
 
 			foreach($urlIDs as $urlID)
 			{
-				$singleUrl = $url->where('string_id', $urlID)->first();
+                $singleUrl = Url::where('string_id', $urlID)->first();
+                
+                if($singleUrl == null)
+                    continue;
+
 				array_push($urlsData, [
 					'string_id' => $urlID,
 					'url' => $singleUrl->url,
@@ -47,7 +50,7 @@ class HomeController extends Controller
 				$urlsCollection = $urlsCollection->forPage(1, 5);
 
             $currentPage = $request->input('page');
-            if($currentPage == null)
+            if($currentPage == null || !is_numeric($currentPage))
                 $currentPage = 1;
 
 			return view('pages.home',

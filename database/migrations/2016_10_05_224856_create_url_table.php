@@ -15,10 +15,10 @@ class CreateUrlTable extends Migration
     {
         Schema::create('urls', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('url');
             $table->string('string_id')->unique();
-            $table->boolean('is_private')->nullable()->default(null);
-            $table->string('private_password')->nullable()->default(null);
+            $table->string('protocol');
+            $table->string('url');
+            $table->boolean('is_private')->default(false);
             $table->timestamps();
         });
     }

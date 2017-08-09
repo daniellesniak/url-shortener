@@ -30,7 +30,15 @@
 						<p class="control">
 							{{--  Url Input (without protocol)  --}}
 							<input class="input is-large is-expanded" type="text" 
-								placeholder="{{ str_replace(['http://', 'https://'], '', route('home')) }}" name="url" autocomplete="off">
+								placeholder="{{ str_replace(['http://', 'https://'], '', route('home')) }}" name="url" autocomplete="off" autofocus>
+						</p>
+						{{--  Custom Alias Input  --}}
+						<p class="control is-visible" id="custom-alias-prefix">
+							<a class="button is-static is-large">/</a>
+						</p>
+						<p class="control" id="custom-alias-control">
+							<input type="text" name="custom_alias" class="input is-large is-visible" placeholder="[a-z] [1-9] [-,_]" id="custom_alias_input">
+							<button type="button" class="button is-info is-large" id="custom-alias-button">CUSTOM ALIAS</button>
 						</p>
 						{{--  is_private Hidden  --}}
 						<input type="hidden" name="is_private" value="false">
@@ -38,115 +46,124 @@
 						<input type="hidden" name="url_with_protocol" value="">
 						<p class="control">
 							{{--  Is Private button  --}}
-							<button type="button" class="button is-info is-large" 
-								value="Short me!" id="is-private"><i class="fa fa-user-secret"></i></button>
+							<button type="button" class="button is-info is-large" id="is-private"><i class="fa fa-user-secret"></i></button>
 						</p>
 						{{--  Submit  --}}
 						<p class="control">
-							<input type="submit" class="button is-info is-large" value="Short me!">
+							<button type="submit" class="button is-info is-large">SHORTEN&nbsp<i class="fa fa-angle-right"></i></button>
 						</p>
 					</form>
 
 				</div>
 			</div>
+			<p class="is-visible" id="custom_alias_info" style="margin-bottom: 20px;">
+				<strong>Custom alias</strong> may contain letters, numbers, dashes, and underscores
+			</p>
 			<p class="is-visible" id="is_private_info">
-				<span class="icon"><i class="fa fa-user-secret"></i></span> - private shorten (it means it will be not visible in Newest section at the Homepage)
+				<span class="icon"><i class="fa fa-user-secret"></i></span> - private shorten means it will be not visible in 'Most Recent' section at the Home
 			</p>
 		</div>
 	</div>
 </section>
 
 @if(isset($urlsData))
-<div class="container" style="margin-top: 20px">
-	{{-- Handle Message --}} 
-	@if(session('message'))
-	<div class="notification {{ session('message')['message_class'] }}">
-		<button class="delete" onclick="disposeMessage()"></button> {{ session('message')['message_text'] }}
-	</div>
-	@endif
+	@if(count($urlsData) > 0)
+		<div class="container" style="margin-top: 20px">
+			{{-- Handle Message --}} 
+			@if(session('message'))
+			<div class="notification {{ session('message')['message_class'] }}">
+				<button class="delete" onclick="disposeMessage()"></button> {{ session('message')['message_text'] }}
+			</div>
+			@endif
 
-	<h1 class="title">Your history of shortens</h1>
-	<table class="table is-striped is-fullwidth">
-		<thead>
-			<tr>
-				<th>URL Destination</th>
-				<th>Shorten URL</th>
-				<th></th>
-				<th>Created</th>
-				<th>Total Redirects</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-				@foreach($urlsData as $singleUrl)
+			<h1 class="title">Your shortens</h1>
+			<table class="table is-striped is-fullwidth">
+				<thead>
+					<tr>
+						<th>URL Destination</th>
+						<th>Shorten URL</th>
+						<th></th>
+						<th>Created</th>
+						<th>Total Redirects</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+						@foreach($urlsData as $singleUrl)
+						<tr>
+							{{-- URL Destination --}}
+							<td><a href="{{ $singleUrl['url'] }}">{{ $singleUrl['url'] }}</a></td>
+							{{-- Shorten URL --}}
+							<td><a href="{{ url('/', $singleUrl['string_id']) }}">{{ url('/', $singleUrl['string_id']) }}</a></td>
+							<td><a data-clipboard-text="{{ url('/', $singleUrl['string_id']) }}"
+									title="Copy to clipboard!" class="button is-small clipboard" href="#">Copy</a></td>
+							{{-- Created --}}
+							<td>{{ $singleUrl['ago_date'] }}</td>
+							{{-- Total Redirects --}}
+							<td>{{ $singleUrl['redirects_count'] }}</td>
+							{{-- [statistics_button] --}}
+							<td>
+								<a title="View statistics of that shorten!" href="{{ url('/', [ $singleUrl['string_id'], 'stats']) }}" class="button is-small"><i class="fa fa-bar-chart"></i></a>
+								<a title="Hide this shorten!" href="{{ action('HomeController@hideUrl', $singleUrl['string_id']) }}" class="button is-small"><i class="fa fa-eye-slash"></i></a>
+							</td>
+						</tr>
+						@endforeach
+				</tbody>
+			</table>
+			{{-- Pagination --}}
+			<nav class="pagination">
+				@if($urlPage['currentPage'] != 1 && $urlPage['currentPage'] != NULL)
+					<a href="{{ action('HomeController@index', ['page' => $urlPage['previousPage']]) }}" class="button">Previous</a> 
+				@endif
+				
+				@if($urlPage['currentPage'] < $urlPage[ 'lastPage']) <a class="button" href="{{ action('HomeController@index', ['page' => $urlPage['nextPage']]) }}">Next</a>
+				@endif
+			</nav>
+		</div>
+	@endif
+@endif
+
+@if(count($newestShortens) > 0)
+	{{-- Most Recent Shortens --}}
+	<div class="container" id="newest-shortens">
+		<h1 class="title">Most Recent Shortens</h1>
+		<table class="table is-striped is-fullwidth">
+			<thead>
 				<tr>
-					{{-- URL Destination --}}
-					<td><a href="{{ $singleUrl['url'] }}">{{ $singleUrl['url'] }}</a></td>
-					{{-- Shorten URL --}}
-					<td><a href="{{ url('/', $singleUrl['string_id']) }}">{{ url('/', $singleUrl['string_id']) }}</a></td>
-					<td><a data-clipboard-text="{{ url('/', $singleUrl['string_id']) }}"
-						    title="Copy to clipboard!" class="button is-small clipboard" href="#">Copy</a></td>
-					{{-- Created --}}
-					<td>{{ $singleUrl['ago_date'] }}</td>
+					<th>URL Destination</th>
+					<th>Shorten URL</th>
+					<th>Created</th>
+					<th>Total Redirects</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach($newestShortens as $newestShorten)
+				<tr>
+					<td>
+						<a href="{{ $newestShorten->url }}">{{ $newestShorten->url }}</a>
+					</td>
+					<td>
+						<a href="{{ route('home')}}/{{ $newestShorten->string_id }}">{{ route('home') }}/{{ $newestShorten->string_id }}</a>
+					</td>
+					<td>
+						{{ $carbon->instance($newestShorten->created_at)->diffForHumans() }}
+					</td>
 					{{-- Total Redirects --}}
-					<td>{{ $singleUrl['redirects_count'] }}</td>
+					<td>{{ $newestShorten['redirects_count'] }}</td>
 					{{-- [statistics_button] --}}
 					<td>
-						<a title="View statistics of that shorten!" href="{{ url('/', [ $singleUrl['string_id'], 'stats']) }}" class="button is-small"><i class="fa fa-bar-chart"></i></a>
-						<a title="Hide this shorten!" href="{{ action('HomeController@hideUrl', $singleUrl['string_id']) }}" class="button is-small"><i class="fa fa-eye-slash"></i></a>
+						<a title="View statistics of this shorten!" href="{{ url('/', [ $newestShorten['string_id'], 'stats']) }}" class="button is-small"><i class="fa fa-bar-chart"></i></a>
 					</td>
 				</tr>
 				@endforeach
-		</tbody>
-	</table>
-	{{-- Pagination --}}
-	<nav class="pagination">
-		@if($urlPage['currentPage'] != 1 && $urlPage['currentPage'] != NULL)
-			<a href="{{ action('HomeController@index', ['page' => $urlPage['previousPage']]) }}" class="button">Previous</a> 
-		@endif
-		
-		@if($urlPage['currentPage'] < $urlPage[ 'lastPage']) <a class="button" href="{{ action('HomeController@index', ['page' => $urlPage['nextPage']]) }}">Next</a>
-		@endif
-	</nav>
-</div>
-@endif
-{{-- Newest Shortens --}}
-<div class="container">
-	<h1 class="title">Newest Shortens</h1>
-	<table class="table is-striped is-fullwidth">
-		<thead>
-			<tr>
-				<th>URL Destination</th>
-				<th>Shorten URL</th>
-				<th>Created</th>
-				<th>Total Redirects</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach($newestShortens as $newestShorten)
-			<tr>
-				<td>
-					<a href="{{ $newestShorten->url }}">{{ $newestShorten->url }}</a>
-				</td>
-				<td>
-					<a href="{{ route('home')}}/{{ $newestShorten->string_id }}">{{ route('home') }}/{{ $newestShorten->string_id }}</a>
-				</td>
-				<td>
-					{{ $carbon->instance($newestShorten->created_at)->diffForHumans() }}
-				</td>
-				{{-- Total Redirects --}}
-				<td>{{ $singleUrl['redirects_count'] }}</td>
-				{{-- [statistics_button] --}}
-				<td>
-					<a title="View statistics of this shorten!" href="{{ url('/', [ $singleUrl['string_id'], 'stats']) }}" class="button is-small"><i class="fa fa-bar-chart"></i></a>
-				</td>
-			</tr>
-			@endforeach
-		</tbody>
-	</table>
-</div>
-@endsection @section('scripts')
+			</tbody>
+		</table>
+	</div>
+	@endif
+@endsection 
+
+@section('scripts')
 <script type="text/javascript">
 	function dispose() {
 		var errorTag = document.getElementsByClassName('tag');

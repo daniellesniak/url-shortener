@@ -26,7 +26,8 @@ class ShortenRequest extends FormRequest
         return [
             'protocol_select' => 'required|in:http://,https://',
             'url_with_protocol' => 'required|url',
-            'is_private' => 'required|boolean'
+            'is_private' => 'required|boolean',
+            'custom_alias' => 'alpha_dash|unique:urls,string_id'
         ];
     }
 
