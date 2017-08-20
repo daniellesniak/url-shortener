@@ -12,9 +12,7 @@ class UrlStatsTableSeeder extends Seeder
      */
     public function run()
     {
-
-
-        \DB::table('url_stats')->delete();
+        /*\DB::table('url_stats')->delete();
         
         \DB::table('url_stats')->insert(array (
             0 => 
@@ -927,8 +925,10 @@ class UrlStatsTableSeeder extends Seeder
                 'created_at' => '2016-11-03 16:29:30',
                 'updated_at' => '2016-11-03 16:29:30',
             ),
-        ));
+        ));*/
         
-        
+        factory(App\UrlStat::class, 300)->create()->each(function ($u) {
+           $u->save();
+        });
     }
 }

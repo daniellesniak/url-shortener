@@ -8,12 +8,12 @@ $('#is-private').on('click', function(e) {
 
 });
 
-$('select[name=protocol_select').on('change', function() {
-    updateModel($('input[name=url]'), $(this), $('input[name=url_with_protocol'))
+$('select[name=protocol_select]').on('change', function() {
+    updateModel($('input[name=url]'), $(this), $('input[name=url_with_protocol]'))
 })
 
 $('input[name=url]').on('keyup', function() {
-    updateModel($(this), $('select[name=protocol_select'), $('input[name=url_with_protocol'))
+    updateModel($(this), $('select[name=protocol_select]'), $('input[name=url_with_protocol]'))
 })
 
 $('#custom-alias-button').on('click', function() {
@@ -34,3 +34,14 @@ function updateModel(urlInput, protocolSelect, urlWithProtocolHidden) {
 
     urlWithProtocolHidden.val(protocolSelectValue + urlInputValue)
 }
+
+$('.refererAnchor').each(function () {
+    let anchorText = $(this).text()
+    let length = 25
+    if(anchorText.length > length)
+    {
+        console.log(anchorText.length)
+        console.log(anchorText.substr(0, length))
+        $(this).text(anchorText.substr(0, length) + '[...]')
+    }
+})

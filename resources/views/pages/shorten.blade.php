@@ -27,16 +27,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>
 
 <script type="text/javascript">
-	var cb = new Clipboard('.copyIt');
+	var cb = new Clipboard('.copyIt')
 
 	cb.on('success', function(e) {
-		alert('Copied!');
-	});
+
+	})
 
 	cb.on('error', function(e) {
-		console.log(e);
-		alert('It cannot be copy to clipboard :/');
-	});
+		alert('Something went wrong when try to copy :' + e);
+	})
 </script>
 
 @endsection

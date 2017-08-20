@@ -19,9 +19,4 @@ Route::get('/{string_id}/hide', 'HomeController@hideUrl');
 
 Route::post('/', 'UrlController@store');
 Route::get('/{id}', 'UrlController@redirect');
-Route::get('/{id}/stats', 'UrlController@statsv2');
-
-Route::get('/test/1/2', function () {
-    $geo = new Geolocation('ip-api');
-    return $geo->ip.': '.$geo->country_code.' - '.$geo->country_name;
-});
+Route::get('/{id}/stats', 'UrlController@stats');

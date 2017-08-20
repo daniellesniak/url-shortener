@@ -21,7 +21,7 @@
 						<p class="control">
 							{{-- Protocol Select --}}
 							<span class="select is-large">
-								<select name="protocol_select">
+								<select name="protocol_select" title="Select protocol">
 									<option value="http://" style="color: red">http://</option>
 									<option value="https://" style="color: green" selected>https://</option>
 								</select>
@@ -29,7 +29,7 @@
 						</p>
 						<p class="control">
 							{{--  Url Input (without protocol)  --}}
-							<input class="input is-large is-expanded" type="text" 
+							<input class="input is-large is-expanded"
 								placeholder="{{ str_replace(['http://', 'https://'], '', route('home')) }}" name="url" autocomplete="off" autofocus>
 						</p>
 						{{--  Custom Alias Input  --}}
@@ -37,7 +37,7 @@
 							<a class="button is-static is-large">/</a>
 						</p>
 						<p class="control" id="custom-alias-control">
-							<input type="text" name="custom_alias" class="input is-large is-visible" placeholder="[a-z] [1-9] [-,_]" id="custom_alias_input">
+							<input name="custom_alias" class="input is-large is-visible" placeholder="[a-z] [1-9] [-,_]" id="custom_alias_input">
 							<button type="button" class="button is-info is-large" id="custom-alias-button">CUSTOM ALIAS</button>
 						</p>
 						{{--  is_private Hidden  --}}
@@ -50,7 +50,7 @@
 						</p>
 						{{--  Submit  --}}
 						<p class="control">
-							<button type="submit" class="button is-info is-large">SHORTEN&nbsp<i class="fa fa-angle-right"></i></button>
+							<button class="button is-info is-large">SHORTEN&nbsp<i class="fa fa-angle-right"></i></button>
 						</p>
 					</form>
 
@@ -96,7 +96,7 @@
 							{{-- Shorten URL --}}
 							<td><a href="{{ url('/', $singleUrl['string_id']) }}">{{ url('/', $singleUrl['string_id']) }}</a></td>
 							<td><a data-clipboard-text="{{ url('/', $singleUrl['string_id']) }}"
-									title="Copy to clipboard!" class="button is-small clipboard" href="#">Copy</a></td>
+									title="Copy to clipboard!" class="button is-small clipboard">Copy</a></td>
 							{{-- Created --}}
 							<td>{{ $singleUrl['ago_date'] }}</td>
 							{{-- Total Redirects --}}
@@ -166,12 +166,12 @@
 @section('scripts')
 <script type="text/javascript">
 	function dispose() {
-		var errorTag = document.getElementsByClassName('tag');
+		let errorTag = document.getElementsByClassName('tag');
 		errorTag[0].style.display = 'none';
 	}
 
 	function disposeMessage() {
-		var message = document.getElementsByClassName('notification');
+		let message = document.getElementsByClassName('notification');
 		message[0].style.display = 'none';
 	}
 </script>
@@ -179,15 +179,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>
 
 <script type="text/javascript">
-	var cb = new Clipboard('.clipboard');
+	let cb = new Clipboard('.clipboard');
 
 	cb.on('success', function (e) {
-		alert('Copied!');
+
 	});
 
-	cb.on('error', function (e) {
-		console.log(e);
-		alert('It cannot be copy to clipboard :/');
-	});
+    cb.on('error', function(e) {
+        alert('Something went wrong when try to copy :' + e);
+    })
 </script>
 @endsection
