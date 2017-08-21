@@ -45,3 +45,12 @@ $('.refererAnchor').each(function () {
         $(this).text(anchorText.substr(0, length) + '[...]')
     }
 })
+
+$('#from-datepicker').datepicker({
+    showButtonPanel: true,
+    dateFormat: 'yy-mm-dd'
+})
+$('#to-datepicker').datepicker({
+    showButtonPanel: true,
+    dateFormat: 'yy-mm-dd'
+})

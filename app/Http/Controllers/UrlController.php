@@ -24,7 +24,7 @@ class UrlController extends Controller
     {
         $url = $request->input('url');
         $protocol = $request->input('protocol_select');
-        $fullUrl = $protocol . $url;
+        //$fullUrl = $protocol . $url;
         $isPrivate = $request->input('is_private');
         $custom_alias = $request->input('custom_alias');
 
@@ -102,6 +102,7 @@ class UrlController extends Controller
         $allUrls = $currentShorten->stats()->get();
         $destinationUrl = $currentShorten->url;
 
+        $activeTab = 'all'; // set active tab to default (all)
         // handle range
         if ($request->input('range') != null) {
             $range = $request->input('range');
@@ -111,34 +112,40 @@ class UrlController extends Controller
                     $allUrls = $currentShorten->stats()
                         ->whereBetween('created_at', [Carbon::now()->subDay(), Carbon::now()])
                         ->get();
+                    $activeTab = '24h';
                     break;
                 case '48h':
                     $allUrls = $currentShorten->stats()
                         ->whereBetween('created_at', [Carbon::now()->subDays(2), Carbon::now()])
                         ->get();
+                    $activeTab = '48h';
                     break;
                 case 'week':
                     $allUrls = $currentShorten->stats()
                         ->whereBetween('created_at', [Carbon::now()->subWeek(), Carbon::now()])
                         ->get();
+                    $activeTab = 'week';
                     break;
                 case 'month':
                     $allUrls = $currentShorten->stats()
                         ->whereBetween('created_at', [Carbon::now()->subMonth(), Carbon::now()])
                         ->get();
+                    $activeTab = 'month';
+                    break;
+                case 'custom':
+                    if (($request->input('from') != null) && ($request->input('to') != null)) {
+                        $allUrls = $currentShorten->stats()
+                            ->whereBetween('created_at', [$request->input('from'), $request->input('to')])
+                            ->get();
+                    }
+
+                    $activeTab = 'custom';
                     break;
                 default:
+                    $activeTab = 'all';
                     break;
             }
 
-            $totalRedirects = $allUrls->count();
-        }
-
-        // handle custom range
-        if (($request->input('from') != null) && ($request->input('to') != null)) {
-            $allUrls = $currentShorten->stats()
-                ->whereBetween('created_at', [$request->input('from'), $request->input('to')])
-                ->get();
             $totalRedirects = $allUrls->count();
         }
 
@@ -157,11 +164,6 @@ class UrlController extends Controller
                 array_push($httpRefererArr, $singleUrl->http_referer);
         }
 
-        $statistics = [
-          'platforms' => array_count_values($platformArr),
-          'browsers' => array_count_values($browserArr)
-        ];
-
         $platformArr = array_count_values($platformArr);
         $browserArr = array_count_values($browserArr);
         $countryArr = array_count_values($countryArr);
@@ -177,21 +179,37 @@ class UrlController extends Controller
         asort($httpRefererArr);
         arsort($httpRefererArr);
 
+        $basicInfo = [
+          'id' => $id,
+          'shortenUrl' => $shortenUrl,
+          'destinationUrl' => $destinationUrl,
+          'totalRedirects' => $totalRedirects
+        ];
+
+        $statistics = [
+            'platforms' => [
+                'data' => $platformArr,
+                'percent' => makePercentFromArray($platformArr)
+            ],
+            'browsers' => [
+                'data' => $browserArr,
+                'percent' => makePercentFromArray($browserArr)
+            ],
+            'countries' => [
+                'data' => $countryArr,
+                'percent' => makePercentFromArray($countryArr)
+            ],
+            'referers' => [
+                'data' => $httpRefererArr,
+                'percent' => makePercentFromArray($httpRefererArr)
+            ]
+        ];
+
         return view('pages.stats',
             [
-                'id' => $id,
-                'shortenUrl' => $shortenUrl,
-                'destinationUrl' => $destinationUrl,
-                'totalRedirects' => $totalRedirects,
-                'platformStats' => $platformArr,
-                'browserStats' => $browserArr,
-                'countryStats' => $countryArr,
-                'httpRefererStats' => $httpRefererArr,
-                'platformPercent' => makePercentFromArray($platformArr),
-                'browserPercent' => makePercentFromArray($browserArr),
-                'countryPercent' => makePercentFromArray($countryArr),
-                'httpRefererPercent' => makePercentFromArray($httpRefererArr),
-                'statistics' => $statistics
+                'basicInfo' => $basicInfo,
+                'statistics' => $statistics,
+                'activeTab' => $activeTab
             ]);
     }
 }

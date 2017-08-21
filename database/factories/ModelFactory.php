@@ -24,13 +24,13 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\UrlStat::class, function (Faker\Generator $faker) {
-   return [
+    return [
        'url_id' => $faker->randomElement([12, 11, 10, 9, 8, 7]),
        'platform' => $faker->randomElement(['Windows', 'Macintosh', 'Linux', 'iPhone']),
        'browser' => $faker->randomElement(['Chrome', 'Mozilla Firefox', 'Internet Explorer']),
        'ip' => $faker->ipv4,
        'country_name' => $faker->country,
-       'country_code' => $faker->countryCode,
+       'country_code' => $faker->countryCode, /* todo: there is a different standard of country names than that in helpers.php */
        'http_referer' => $faker->url,
        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')

@@ -111,13 +111,15 @@
 				</tbody>
 			</table>
 			{{-- Pagination --}}
-			<nav class="pagination">
-				@if($urlPage['currentPage'] != 1 && $urlPage['currentPage'] != NULL)
-					<a href="{{ action('HomeController@index', ['page' => $urlPage['previousPage']]) }}" class="button">Previous</a> 
-				@endif
-				
-				@if($urlPage['currentPage'] < $urlPage[ 'lastPage']) <a class="button" href="{{ action('HomeController@index', ['page' => $urlPage['nextPage']]) }}">Next</a>
-				@endif
+			<nav class="pagination is-centered">
+                <ul class="pagination-list">
+                    @if($urlPage['currentPage'] != 1 && $urlPage['currentPage'] != NULL)
+                        <a href="{{ action('HomeController@index', ['page' => $urlPage['previousPage']]) }}" class="pagination-previous">Previous</a>
+                    @endif
+                    @if($urlPage['currentPage'] < $urlPage[ 'lastPage'])
+                        <a class="pagination-next" href="{{ action('HomeController@index', ['page' => $urlPage['nextPage']]) }}">Next</a>
+                    @endif
+                </ul>
 			</nav>
 		</div>
 	@endif
