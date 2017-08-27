@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>URL Shortener - @yield('title')</title>
+		<title>{{ getenv('APP_TITLE') }} - @yield('title')</title>
 		
 		<!-- Bulma CSS -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.1/css/bulma.min.css">
@@ -31,7 +31,6 @@
 
 			@include('includes.footer')
 		</div>
-		@yield('scripts')
 	</body>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -40,4 +39,5 @@
         integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
         crossorigin="anonymous"></script>
 	<script src="{{ asset('/js/app.js') }}"></script>
+    @yield('scripts')
 </html>

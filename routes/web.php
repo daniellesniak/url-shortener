@@ -20,3 +20,4 @@ Route::get('/{string_id}/hide', 'HomeController@hideUrl');
 Route::post('/', 'UrlController@store');
 Route::get('/{id}', 'UrlController@redirect');
 Route::get('/{id}/stats', 'UrlController@stats');
+Route::get('/statistics', 'StatisticsController@index');

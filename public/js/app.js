@@ -18,9 +18,9 @@ $('input[name=url]').on('keyup', function() {
 
 $('#custom-alias-button').on('click', function() {
     $(this).hide()
-    $('#custom-alias-prefix').removeClass('is-visible')
-    $('#custom_alias_input').removeClass('is-visible')
-    $('#custom_alias_info').removeClass('is-visible')
+    $('#custom-alias-prefix').removeClass('is-not-visible')
+    $('#custom_alias_input').removeClass('is-not-visible')
+    $('#custom_alias_info').removeClass('is-not-visible')
     $('input[name=custom_alias]').focus()
 })
 
@@ -54,3 +54,15 @@ $('#to-datepicker').datepicker({
     showButtonPanel: true,
     dateFormat: 'yy-mm-dd'
 })
+
+function notificationGenerator(color, message)
+{
+    return '<div class="notification is-' + color + '">' + message + '</div>'
+}
+
+function pushNotification(html, delay, fadeOutDuration)
+{
+    let el = $(html)
+    $('.notifications').append(el)
+    el.delay(delay).fadeOut(fadeOutDuration)
+}

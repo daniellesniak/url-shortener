@@ -14,50 +14,63 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
+        /* Get last 5 shortens. */
 		$newestShortens = Url::orderBy('created_at', 'desc')->where('is_private', false)->paginate(5);
 
+        /* Count redirects */
+		$newestShortens->map(function ($sh) {
+		    $sh['redirects_count'] = $sh->stats()->count();
+		    return $sh;
+        });
+
+		$currentPage = $request->input('page');
+
+		/* Get my shortens */
     	if(session('urlIDs') != null)
 		{
-			$urlIDs = session('urlIDs');
+			$sessionUrlsIds = session('urlIDs');
 
-			$urlsData = [];
+			$myShortens = [];
 
-			foreach($urlIDs as $urlID)
+			foreach($sessionUrlsIds as $urlId)
 			{
-                $singleUrl = Url::where('string_id', $urlID)->first();
+                $singleUrl = Url::where('string_id', $urlId)->first();
                 
-                if($singleUrl == null)
+                if($singleUrl != null)
+                    array_push($myShortens, [
+                        'string_id' => $urlId,
+                        'url' => $singleUrl->url,
+                        'created_at' => $singleUrl->created_at,
+                        'ago_date' => Carbon::instance($singleUrl->created_at)->diffForHumans(),
+                        'redirects_count' => $singleUrl->stats()->count()
+                    ]);
+                else
                     continue;
-
-				array_push($urlsData, [
-					'string_id' => $urlID,
-					'url' => $singleUrl->url,
-					'created_at' => $singleUrl->created_at,
-					'ago_date' => Carbon::instance($singleUrl->created_at)->diffForHumans(),
-					'redirects_count' => $singleUrl->stats()->count()
-				]);
 			}
 
-			// Create collection form $urlsData and reverse to show newest first
-			$urlsCollection = collect($urlsData)->reverse();
+			// Reverse $myShortens to show newest firstly
+			$myShortens = collect($myShortens)->reverse();
 
             // Calculate pages for urls
-            $urlPages = ceil($urlsCollection->count() / 5);
+            $shortenPages = ceil($myShortens->count() / 5);
 
-            if($request->has('page') && is_numeric($request->input('page')))
-                $urlsCollection = $urlsCollection->forPage($request->input('page'), 5);
+            if($currentPage != null && is_numeric($currentPage))
+                $myShortens = $myShortens->forPage($currentPage, 5);
             else
-				$urlsCollection = $urlsCollection->forPage(1, 5);
+                $myShortens = $myShortens->forPage(1, 5);
 
-            $currentPage = $request->input('page');
             if($currentPage == null || !is_numeric($currentPage))
                 $currentPage = 1;
 
 			return view('pages.home',
-                ['urlsData' => $urlsCollection,
-                    'urlPage' => ['pages' => $urlPages, 'currentPage' => $currentPage,
-                        'previousPage' => $currentPage - 1, 'nextPage' => $currentPage + 1, 'lastPage' => $urlPages]
-                    , 'newestShortens' => $newestShortens, 'carbon' => new Carbon()]);
+                [
+                    'myShortens' => $myShortens,
+                    'newestShortens' => $newestShortens, 'carbon' => new Carbon(),
+                    'pagination' => [
+                        'pages' => $shortenPages, 'currentPage' => $currentPage,
+                        'previousPage' => $currentPage - 1, 'nextPage' => $currentPage + 1, 'lastPage' => $shortenPages
+                    ]
+                ]);
 		}
 
     	return view('pages.home', ['newestShortens' => $newestShortens, 'carbon' => new Carbon()]);

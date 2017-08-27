@@ -1,8 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
-.is-visible {
+.is-not-visible {
     display: none;
 }
 
 #newest-shortens {
     margin-top: 30px;
+}
+
+.notifications {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    z-index: 999;
 }

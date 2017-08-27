@@ -17,10 +17,10 @@ class UrlController extends Controller
 {
     /**
      * @desc Get url, validate and store it in database.
-     * @param \App\Http\Requests\ShortenRequest $request
-     * @return \Illuminate\Http\Response
+     * @param Requests\ShortenRequest $request
+     * @return Response
      */
-    public function store(\App\Http\Requests\ShortenRequest $request)
+    public function store(Requests\ShortenRequest $request)
     {
         $url = $request->input('url');
         $protocol = $request->input('protocol_select');
@@ -63,6 +63,11 @@ class UrlController extends Controller
      */
     public function redirect($id)
     {
+        $url = Url::where('string_id', '=', $id)->first();
+
+        if($url == null)
+            return 'URL DOES NOT EXIST!'; /* TODO */
+
         $ua = parse_user_agent(); // parsed user agent
 
         $geo = new Geolocation; // default geolocation by ip provider: http://freegeoip.net/
@@ -77,9 +82,7 @@ class UrlController extends Controller
         if (isset($_SERVER['HTTP_REFERER']))
             $userInfo['http_referer'] = $_SERVER['HTTP_REFERER'];
 
-        $url = Url::where('string_id', '=', $id)->first();
-
-        $urlStat = $url->stats()->create($userInfo);
+        $url->stats()->create($userInfo);
 
         return redirect($url->protocol . $url->url, 301);
     }

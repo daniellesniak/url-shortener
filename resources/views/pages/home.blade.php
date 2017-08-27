@@ -14,7 +14,7 @@
 			@endif
 			<div class="columns">
 				<div class="column is-two-thirds">
-					<h1 class="title">What do you want to short?</h1>
+					<h1 class="title">Enter a long URL:</h1>
 					<form action="{{ @action('UrlController@store') }}" method="post" class="field has-addons">
 						{{--  Csrf protection  --}}
 						{{ csrf_field() }}
@@ -33,11 +33,11 @@
 								placeholder="{{ str_replace(['http://', 'https://'], '', route('home')) }}" name="url" autocomplete="off" autofocus>
 						</p>
 						{{--  Custom Alias Input  --}}
-						<p class="control is-visible" id="custom-alias-prefix">
+						<p class="control is-not-visible" id="custom-alias-prefix">
 							<a class="button is-static is-large">/</a>
 						</p>
 						<p class="control" id="custom-alias-control">
-							<input name="custom_alias" class="input is-large is-visible" placeholder="[a-z] [1-9] [-,_]" id="custom_alias_input">
+							<input name="custom_alias" class="input is-large is-not-visible" placeholder="[a-z] [1-9] [-,_]" id="custom_alias_input">
 							<button type="button" class="button is-info is-large" id="custom-alias-button">CUSTOM ALIAS</button>
 						</p>
 						{{--  is_private Hidden  --}}
@@ -56,18 +56,23 @@
 
 				</div>
 			</div>
-			<p class="is-visible" id="custom_alias_info" style="margin-bottom: 20px;">
+			<p class="is-not-visible" id="custom_alias_info" style="margin-bottom: 20px;">
 				<strong>Custom alias</strong> may contain letters, numbers, dashes, and underscores
 			</p>
-			<p class="is-visible" id="is_private_info">
+			<p class="is-not-visible" id="is_private_info">
 				<span class="icon"><i class="fa fa-user-secret"></i></span> - private shorten means it will be not visible in 'Most Recent' section at the Home
 			</p>
 		</div>
 	</div>
 </section>
 
-@if(isset($urlsData))
-	@if(count($urlsData) > 0)
+{{-- Notification --}}
+<div class="notifications">
+
+</div>
+
+@if(isset($myShortens))
+	@if(count($myShortens) > 0)
 		<div class="container" style="margin-top: 20px">
 			{{-- Handle Message --}} 
 			@if(session('message'))
@@ -89,7 +94,7 @@
 					</tr>
 				</thead>
 				<tbody>
-						@foreach($urlsData as $singleUrl)
+						@foreach($myShortens as $singleUrl)
 						<tr>
 							{{-- URL Destination --}}
 							<td><a href="{{ $singleUrl['url'] }}">{{ $singleUrl['url'] }}</a></td>
@@ -113,11 +118,11 @@
 			{{-- Pagination --}}
 			<nav class="pagination is-centered">
                 <ul class="pagination-list">
-                    @if($urlPage['currentPage'] != 1 && $urlPage['currentPage'] != NULL)
-                        <a href="{{ action('HomeController@index', ['page' => $urlPage['previousPage']]) }}" class="pagination-previous">Previous</a>
+                    @if($pagination['currentPage'] != 1 && $pagination['currentPage'] != NULL)
+                        <a href="{{ action('HomeController@index', ['page' => $pagination['previousPage']]) }}" class="pagination-previous">Previous</a>
                     @endif
-                    @if($urlPage['currentPage'] < $urlPage[ 'lastPage'])
-                        <a class="pagination-next" href="{{ action('HomeController@index', ['page' => $urlPage['nextPage']]) }}">Next</a>
+                    @if($pagination['currentPage'] < $pagination[ 'lastPage'])
+                        <a class="pagination-next" href="{{ action('HomeController@index', ['page' => $pagination['nextPage']]) }}">Next</a>
                     @endif
                 </ul>
 			</nav>
@@ -163,7 +168,7 @@
 		</table>
 	</div>
 	@endif
-@endsection 
+@endsection
 
 @section('scripts')
 <script type="text/javascript">
@@ -184,11 +189,11 @@
 	let cb = new Clipboard('.clipboard');
 
 	cb.on('success', function (e) {
-
+        pushNotification(notificationGenerator('success', 'Shorten has been copied successfully!'), 3000, 'slow')
 	});
 
     cb.on('error', function(e) {
-        alert('Something went wrong when try to copy :' + e);
+        alert('Something went wrong when trying to copy :' + e);
     })
 </script>
 @endsection
