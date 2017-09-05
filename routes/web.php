@@ -15,9 +15,9 @@ use Illuminate\Session;
 use App\Helpers\Geolocation;
 
 Route::get('/', 'HomeController@index')->name('home');
-Route::get('/{string_id}/hide', 'HomeController@hideUrl');
-
 Route::post('/', 'UrlController@store');
+Route::get('/{string_id}/hide', 'HomeController@hideUrl');
+Route::get('/my-shortens', 'MyShortensController@index');
+
 Route::get('/{id}', 'UrlController@redirect');
 Route::get('/{id}/stats', 'UrlController@stats');
-Route::get('/statistics', 'StatisticsController@index');

@@ -15,7 +15,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         /* Get last 5 shortens. */
-		$newestShortens = Url::orderBy('created_at', 'desc')->where('is_private', false)->paginate(5);
+		$newestShortens = Url::orderBy('created_at', 'desc')->where('is_private', false)->take(5)->get();
 
         /* Count redirects */
 		$newestShortens->map(function ($sh) {
@@ -51,8 +51,12 @@ class HomeController extends Controller
 			// Reverse $myShortens to show newest firstly
 			$myShortens = collect($myShortens)->reverse();
 
-            // Calculate pages for urls
+            // Calculate number of pages (it's also last page)
             $shortenPages = ceil($myShortens->count() / 5);
+
+            // If current page is greater than last page set it to the last page.
+            if($currentPage > $shortenPages)
+                $currentPage = $shortenPages;
 
             if($currentPage != null && is_numeric($currentPage))
                 $myShortens = $myShortens->forPage($currentPage, 5);
@@ -65,7 +69,8 @@ class HomeController extends Controller
 			return view('pages.home',
                 [
                     'myShortens' => $myShortens,
-                    'newestShortens' => $newestShortens, 'carbon' => new Carbon(),
+                    'newestShortens' => $newestShortens,
+                    'carbon' => new Carbon(),
                     'pagination' => [
                         'pages' => $shortenPages, 'currentPage' => $currentPage,
                         'previousPage' => $currentPage - 1, 'nextPage' => $currentPage + 1, 'lastPage' => $shortenPages
@@ -89,6 +94,7 @@ class HomeController extends Controller
 
             session(['urlIDs' => $urlIDs]);
         }
+        
         return redirect()->route('home')->with('message', ['message_text' => 'URL has been hidden successfully!', 'message_class' => 'is-success']);
     }
 }

@@ -1,17 +1,10 @@
-@extends('layouts.base') @section('title', 'Home') @section('content-fluid')
+@extends('layouts.base')
+@section('title', 'Home')
+
+@section('content-fluid')
 <section class="hero is-medium is-dark is-bold">
 	<div class="hero-body">
 		<div class="container">
-			@if (count($errors) > 0) 
-				@foreach ($errors->all() as $error)
-				<span class="tag is-danger is-small">
-					<i class="fa fa-exclamation-circle"></i>
-					&nbsp
-					{{ $error }}
-					<button onclick="dispose()" class="delete is-small"></button>
-				</span>
-				@endforeach 
-			@endif
 			<div class="columns">
 				<div class="column is-two-thirds">
 					<h1 class="title">Enter a long URL:</h1>
@@ -42,15 +35,14 @@
 						</p>
 						{{--  is_private Hidden  --}}
 						<input type="hidden" name="is_private" value="false">
-						{{-- url_with_protocol Hidden --}}
-						<input type="hidden" name="url_with_protocol" value="">
 						<p class="control">
 							{{--  Is Private button  --}}
 							<button type="button" class="button is-info is-large" id="is-private"><i class="fa fa-user-secret"></i></button>
 						</p>
 						{{--  Submit  --}}
 						<p class="control">
-							<button class="button is-info is-large">SHORTEN&nbsp<i class="fa fa-angle-right"></i></button>
+							{{--<button class="button is-info is-large">SHORTEN&nbsp<i class="fa fa-angle-right"></i></button>--}}
+                            <input type="submit" class="button is-info is-large" value="SHORTEN">
 						</p>
 					</form>
 
@@ -81,7 +73,7 @@
 			</div>
 			@endif
 
-			<h1 class="title">Your shortens</h1>
+			<h1 class="title">My Shortens</h1>
 			<table class="table is-striped is-fullwidth">
 				<thead>
 					<tr>
@@ -139,6 +131,7 @@
 				<tr>
 					<th>URL Destination</th>
 					<th>Shorten URL</th>
+                    <th></th>
 					<th>Created</th>
 					<th>Total Redirects</th>
 					<th>Actions</th>
@@ -153,6 +146,7 @@
 					<td>
 						<a href="{{ route('home')}}/{{ $newestShorten->string_id }}">{{ route('home') }}/{{ $newestShorten->string_id }}</a>
 					</td>
+                    <td></td>
 					<td>
 						{{ $carbon->instance($newestShorten->created_at)->diffForHumans() }}
 					</td>

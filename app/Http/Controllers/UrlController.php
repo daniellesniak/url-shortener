@@ -66,7 +66,7 @@ class UrlController extends Controller
         $url = Url::where('string_id', '=', $id)->first();
 
         if($url == null)
-            return 'URL DOES NOT EXIST!'; /* TODO */
+            return response(view('errors.404'),404);
 
         $ua = parse_user_agent(); // parsed user agent
 
