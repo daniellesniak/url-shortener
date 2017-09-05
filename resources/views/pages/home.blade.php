@@ -27,7 +27,7 @@
 						</p>
 						{{--  Custom Alias Input  --}}
 						<p class="control is-not-visible" id="custom-alias-prefix">
-							<a class="button is-static is-large">/</a>
+							<a class="button is-static is-large">|</a>
 						</p>
 						<p class="control" id="custom-alias-control">
 							<input name="custom_alias" class="input is-large is-not-visible" placeholder="[a-z] [1-9] [-,_]" id="custom_alias_input">
