@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class HomeTest extends TestCase
 {
+    use DatabaseMigrations;
     /**
      * A basic functional test example.
      *
@@ -22,17 +23,33 @@ class HomeTest extends TestCase
     }
 
     /**
-     * Test shorten creating.
+     * Test shorten form creating.
      *
      * @return void
      */
-    public function testCreateShorten()
+    public function testCreateShortenForm()
     {
         $this->visit('/')
-            ->select('https://', 'url_with_protocol')
+            ->select('https://', 'protocol_select')
             ->type('https://stackoverflow.com/questions/11828270/how-to-exit-the-vim-editor', 'url')
             ->press('SHORTEN')
             ->seePageIs('/')
             ->seeStatusCode(200);
+    }
+
+    /**
+     * Test shorten post creating.
+     *
+     * @return void
+     */
+    public function testCreateShortenPostWithSession()
+    {
+        $response = $this->call('POST', '/', [
+           'protocol_select' => 'https://',
+           'url' => 'google.com',
+            'is_private' => false
+        ]);
+
+        $this->assertResponseOk()->assertSessionHas('urlIDs');
     }
 }
