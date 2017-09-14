@@ -4,14 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
-
 use Carbon\Carbon;
 use App\Url;
 use Illuminate\Support\Facades\Response;
 
 class HomeController extends Controller
 {
+
+    /**
+     * Show home page.
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index(Request $request)
     {
         /* Get last 5 shortens. */
@@ -35,15 +40,17 @@ class HomeController extends Controller
 			foreach($sessionUrlsIds as $urlId)
 			{
                 $singleUrl = Url::where('string_id', $urlId)->first();
-                
-                if($singleUrl != null)
+
+                if($singleUrl != null) {
                     array_push($myShortens, [
                         'string_id' => $urlId,
                         'url' => $singleUrl->url,
+                        'protocol' => $singleUrl->protocol,
                         'created_at' => $singleUrl->created_at,
                         'ago_date' => Carbon::instance($singleUrl->created_at)->diffForHumans(),
                         'redirects_count' => $singleUrl->stats()->count()
                     ]);
+                }
                 else
                     continue;
 			}
