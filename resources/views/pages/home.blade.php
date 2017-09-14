@@ -8,7 +8,7 @@
 			<div class="columns">
 				<div class="column is-two-thirds">
 					<h1 class="title">Enter a long URL:</h1>
-					<form action="{{ @action('UrlController@store') }}" method="post" class="field has-addons">
+					<form action="{{ @action('ShortenController@store') }}" method="post" class="field has-addons">
 						{{--  Csrf protection  --}}
 						{{ csrf_field() }}
 						<p class="control">
@@ -41,7 +41,6 @@
 						</p>
 						{{--  Submit  --}}
 						<p class="control">
-							{{--<button class="button is-info is-large">SHORTEN&nbsp<i class="fa fa-angle-right"></i></button>--}}
                             <input type="submit" class="button is-info is-large" value="SHORTEN">
 						</p>
 					</form>
@@ -89,7 +88,7 @@
 						@foreach($myShortens as $singleUrl)
 						<tr>
 							{{-- URL Destination --}}
-							<td><a href="{{ $singleUrl['url'] }}">{{ $singleUrl['url'] }}</a></td>
+							<td><a href="{{ $singleUrl['protocol'].$singleUrl['url'] }}">{{ $singleUrl['url'] }}</a></td>
 							{{-- Shorten URL --}}
 							<td><a href="{{ url('/', $singleUrl['string_id']) }}">{{ url('/', $singleUrl['string_id']) }}</a></td>
 							<td><a data-clipboard-text="{{ url('/', $singleUrl['string_id']) }}"
@@ -98,9 +97,9 @@
 							<td>{{ $singleUrl['ago_date'] }}</td>
 							{{-- Total Redirects --}}
 							<td>{{ $singleUrl['redirects_count'] }}</td>
-							{{-- [statistics_button] --}}
+							{{-- Actions [statistics, hide] --}}
 							<td>
-								<a title="View statistics of that shorten!" href="{{ url('/', [ $singleUrl['string_id'], 'stats']) }}" class="button is-small"><i class="fa fa-bar-chart"></i></a>
+								<a title="Show shorten's statistics!" href="{{ action('ShortenController@stats', $singleUrl['string_id']) }}" class="button is-small"><i class="fa fa-bar-chart"></i></a>
 								<a title="Hide this shorten!" href="{{ action('HomeController@hideUrl', $singleUrl['string_id']) }}" class="button is-small"><i class="fa fa-eye-slash"></i></a>
 							</td>
 						</tr>
@@ -141,7 +140,7 @@
 				@foreach($newestShortens as $newestShorten)
 				<tr>
 					<td>
-						<a href="{{ $newestShorten->url }}">{{ $newestShorten->url }}</a>
+						<a href="{{ $newestShorten->protocol.$newestShorten->url }}">{{ $newestShorten->url }}</a>
 					</td>
 					<td>
 						<a href="{{ route('home')}}/{{ $newestShorten->string_id }}">{{ route('home') }}/{{ $newestShorten->string_id }}</a>
