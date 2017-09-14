@@ -61,31 +61,31 @@
 				<div class="tabs is-centered is-toggle">
 				  <ul>
 				    <li @if($activeTab == 'all') class="is-active" @endif>
-				      <a href="{{ action('UrlController@stats', $basicInfo['id']) }}">
+				      <a href="{{ action('ShortenController@stats', $basicInfo['id']) }}">
 				        <span class="icon is-small"><i class="fa fa-calendar"></i></span>
 				        <span>All the time</span>
 				      </a>
 				    </li>
 				    <li @if($activeTab == '24h') class="is-active" @endif>
-				      <a href="{{ action('UrlController@stats', ['id' => $basicInfo['id'], 'range' => '24h']) }}">
+				      <a href="{{ action('ShortenController@stats', ['id' => $basicInfo['id'], 'range' => '24h']) }}">
 				        <span class="icon is-small"><i class="fa fa-circle-thin"></i></span>
 				        <span>24 hours</span>
 				      </a>
 				    </li>
 				    <li @if($activeTab == '48h') class="is-active" @endif>
-				      <a href="{{ action('UrlController@stats', ['id' => $basicInfo['id'], 'range' => '48h']) }}">
+				      <a href="{{ action('ShortenController@stats', ['id' => $basicInfo['id'], 'range' => '48h']) }}">
 				        <span class="icon is-small"><i class="fa fa-angle-left"></i></span>
 				        <span>48 hours</span>
 				      </a>
 				    </li>
 				    <li @if($activeTab == 'week') class="is-active" @endif>
-				      <a href="{{ action('UrlController@stats', ['id' => $basicInfo['id'], 'range' => 'week']) }}">
+				      <a href="{{ action('ShortenController@stats', ['id' => $basicInfo['id'], 'range' => 'week']) }}">
 				        <span class="icon is-small"><i class="fa fa-angle-double-left"></i></span>
 				        <span>1 week</span>
 				      </a>
 				    </li>
 				    <li @if($activeTab == 'month') class="is-active" @endif>
-				      <a href="{{ action('UrlController@stats', ['id' => $basicInfo['id'], 'range' => 'month']) }}">
+				      <a href="{{ action('ShortenController@stats', ['id' => $basicInfo['id'], 'range' => 'month']) }}">
 				        <span class="icon is-small"><i class="fa fa-angle-double-left"></i><i class="fa fa-angle-double-left"></i></span>
 				        <span>1 month</span>
 				      </a>
