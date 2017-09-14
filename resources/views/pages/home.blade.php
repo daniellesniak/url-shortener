@@ -57,110 +57,17 @@
 	</div>
 </section>
 
-{{-- Notification --}}
+{{-- Notifications --}}
 <div class="notifications">
 
 </div>
 
-@if(isset($myShortens))
-	@if(count($myShortens) > 0)
-		<div class="container" style="margin-top: 20px">
-			{{-- Handle Message --}} 
-			@if(session('message'))
-			<div class="notification {{ session('message')['message_class'] }}">
-				<button class="delete" onclick="disposeMessage()"></button> {{ session('message')['message_text'] }}
-			</div>
-			@endif
+{{-- My Shortens --}}
+@include('partials.my-shortens', $myShortens)
 
-			<h1 class="title">My Shortens</h1>
-			<table class="table is-striped is-fullwidth">
-				<thead>
-					<tr>
-						<th>URL Destination</th>
-						<th>Shorten URL</th>
-						<th></th>
-						<th>Created</th>
-						<th>Total Redirects</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-						@foreach($myShortens as $singleUrl)
-						<tr>
-							{{-- URL Destination --}}
-							<td><a href="{{ $singleUrl['protocol'].$singleUrl['url'] }}">{{ $singleUrl['url'] }}</a></td>
-							{{-- Shorten URL --}}
-							<td><a href="{{ url('/', $singleUrl['string_id']) }}">{{ url('/', $singleUrl['string_id']) }}</a></td>
-							<td><a data-clipboard-text="{{ url('/', $singleUrl['string_id']) }}"
-									title="Copy to clipboard!" class="button is-small clipboard">Copy</a></td>
-							{{-- Created --}}
-							<td>{{ $singleUrl['ago_date'] }}</td>
-							{{-- Total Redirects --}}
-							<td>{{ $singleUrl['redirects_count'] }}</td>
-							{{-- Actions [statistics, hide] --}}
-							<td>
-								<a title="Show shorten's statistics!" href="{{ action('ShortenController@stats', $singleUrl['string_id']) }}" class="button is-small"><i class="fa fa-bar-chart"></i></a>
-								<a title="Hide this shorten!" href="{{ action('HomeController@hideUrl', $singleUrl['string_id']) }}" class="button is-small"><i class="fa fa-eye-slash"></i></a>
-							</td>
-						</tr>
-						@endforeach
-				</tbody>
-			</table>
-			{{-- Pagination --}}
-			<nav class="pagination is-centered">
-                <ul class="pagination-list">
-                    @if($pagination['currentPage'] != 1 && $pagination['currentPage'] != NULL)
-                        <a href="{{ action('HomeController@index', ['page' => $pagination['previousPage']]) }}" class="pagination-previous">Previous</a>
-                    @endif
-                    @if($pagination['currentPage'] < $pagination[ 'lastPage'])
-                        <a class="pagination-next" href="{{ action('HomeController@index', ['page' => $pagination['nextPage']]) }}">Next</a>
-                    @endif
-                </ul>
-			</nav>
-		</div>
-	@endif
-@endif
+{{-- Newest Shortens --}}
+@include('partials.newest-shortens', $newestShortens)
 
-@if(count($newestShortens) > 0)
-	{{-- Most Recent Shortens --}}
-	<div class="container" id="newest-shortens">
-		<h1 class="title">Most Recent Shortens</h1>
-		<table class="table is-striped is-fullwidth">
-			<thead>
-				<tr>
-					<th>URL Destination</th>
-					<th>Shorten URL</th>
-                    <th></th>
-					<th>Created</th>
-					<th>Total Redirects</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach($newestShortens as $newestShorten)
-				<tr>
-					<td>
-						<a href="{{ $newestShorten->protocol.$newestShorten->url }}">{{ $newestShorten->url }}</a>
-					</td>
-					<td>
-						<a href="{{ route('home')}}/{{ $newestShorten->string_id }}">{{ route('home') }}/{{ $newestShorten->string_id }}</a>
-					</td>
-                    <td></td>
-					<td>
-						{{ $carbon->instance($newestShorten->created_at)->diffForHumans() }}
-					</td>
-					{{-- Total Redirects --}}
-					<td>{{ $newestShorten['redirects_count'] }}</td>
-					{{-- [statistics_button] --}}
-					<td>
-						<a title="View statistics of this shorten!" href="{{ url('/', [ $newestShorten['string_id'], 'stats']) }}" class="button is-small"><i class="fa fa-bar-chart"></i></a>
-					</td>
-				</tr>
-				@endforeach
-			</tbody>
-		</table>
-	</div>
-	@endif
 @endsection
 
 @section('scripts')
