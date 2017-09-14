@@ -8,15 +8,17 @@ use App\Url;
 use App\UrlStat;
 use Carbon\Carbon;
 use App\Helpers\Geolocation;
+use Illuminate\Http\Response;
 
 /**
  * Class UrlController
  * @package App\Http\Controllers
  */
-class UrlController extends Controller
+class ShortenController extends Controller
 {
     /**
-     * @desc Get url, validate and store it in database.
+     * Get url, validate and store it in database.
+     *
      * @param Requests\ShortenRequest $request
      * @return Response
      */
@@ -57,7 +59,8 @@ class UrlController extends Controller
     }
 
     /**
-     * @desc Store information about user to DB and redirect user.
+     * Store information about user to DB and redirect user.
+     *
      * @param $id
      * @return \Illuminate\Http\Response
      */
@@ -88,6 +91,7 @@ class UrlController extends Controller
     }
 
     /**
+     * @param Request $request
      * @param $id
      * @return Response
      */
@@ -98,7 +102,7 @@ class UrlController extends Controller
         if ($currentShorten == null)
             return response('Url not found! Redirecting in 5 seconds...<meta http-equiv="refresh" content="5; url=' . route('home') . '" />', 404);
 
-        $shortenUrl = action("UrlController@redirect", $id);
+        $shortenUrl = action("ShortenController@redirect", $id);
 
         // set variables to default
         $totalRedirects = $currentShorten->stats()->count();
