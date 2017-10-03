@@ -7,13 +7,13 @@
 	<div class="hero-body">
 	    <div class="container has-text-centered">
 		    <h2 class="subtitle">It's your shorten URL, just copy it!</h2>
-		    <input type="text" class="input is-dark is-large" value="{{ $shortenUrl }}" readonly onclick="this.select();" style="cursor: pointer; text-align: center;">
+		    <input type="text" class="input is-dark is-large" value="{{ $shorten->shortenUrl() }}" readonly onclick="this.select();" style="cursor: pointer; text-align: center;">
 	    </div>
 
 	    <div class="container">
 	    <h2 class="subtitle">Share:</h2>
 	    {{-- Copy --}}
-	    <button class="button is-primary copyIt" data-clipboard-text="{{ $shortenUrl }}"><i class="fa fa-copy"></i>&nbspCopy!</button>
+	    <button class="button is-primary copyIt" data-clipboard-text="{{ $shorten->shortenUrl() }}"><i class="fa fa-copy"></i>&nbspCopy!</button>
 	    {{-- Facebook --}}
 	    <button class="button"><i class="fa fa-facebook"></i>&nbspShare to facebook!</button>
 	    {{-- Google+ --}}
