@@ -16,11 +16,11 @@ class CreateUrlstatsTable extends Migration
         Schema::create('url_stats', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('url_id');
-            $table->string('platform');
-            $table->string('browser');
-            $table->string('ip');
-            $table->string('country_name');
-            $table->string('country_code');
+            $table->string('platform')->nullable();
+            $table->string('browser')->nullable();
+            $table->string('ip')->nullable();
+            $table->string('country_name')->nullable();
+            $table->string('country_code')->nullable();
             $table->string('http_referer')->nullable();
             $table->timestamps();
         });
