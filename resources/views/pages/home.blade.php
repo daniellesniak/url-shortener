@@ -44,6 +44,14 @@
 						</p>
 					</form>
 
+					@if(count($errors) > 0)
+						@foreach($errors->all() as $error)
+							<span class="tag is-danger">
+							  {{ $error }}
+								<button class="delete is-small"></button>
+							</span>
+						@endforeach
+					@endif
 				</div>
 			</div>
 			<p class="is-not-visible" id="custom_alias_info" style="margin-bottom: 20px;">
@@ -73,15 +81,9 @@
 
 @section('scripts')
 <script type="text/javascript">
-	function dispose() {
-		let errorTag = document.getElementsByClassName('tag');
-		errorTag[0].style.display = 'none';
-	}
-
-	function disposeMessage() {
-		let message = document.getElementsByClassName('notification');
-		message[0].style.display = 'none';
-	}
+	$('.tag .delete').on('click', function () {
+	    $(this).parent().css('display', 'none');
+	})
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>
