@@ -7,9 +7,6 @@
           <a class="nav-item is-tab" href="{{ url('/') }}" name="Home">
               <i class="fa fa-home"></i>&nbsp;HOME
           </a>
-          <a class="nav-item is-tab" href="{{ url('/my-shortens') }}" name="Home">
-              <i class="fa fa-archive"></i>&nbsp;MY SHORTENS
-          </a>
       </div>
 
       <div class="nav-center">
