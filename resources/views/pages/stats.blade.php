@@ -1,6 +1,6 @@
 @extends('layouts.base')
 
-@section('title', $basicInfo['id'] . " - statistics")
+@section('title', "Shorten $shorten->url - statistics")
 
 @section('stylesheets')
 	{{-- Flag Icons --}}
@@ -22,7 +22,7 @@
 			</div>
 			<div class="field-body">
 				<div class="field">
-					<span class="tag is-dark is-large"><b>{{ $basicInfo['totalRedirects'] }}</b></span>
+					<span class="tag is-dark is-large"><b>{{ $stats->count() }}</b></span>
 				</div>
 			</div>
 		</div>
@@ -34,8 +34,8 @@
 			</div>
 			<div class="field-body">
 				<div class="field">
-					<a href='{{ $basicInfo['shortenUrl'] }}' class="control is-expanded" target="_blank">
-						<input class="input" readonly value="{{ $basicInfo['shortenUrl'] }}" title="Shorten Url">
+					<a href='{{ $shorten->shortenUrl() }}' class="control is-expanded" target="_blank">
+						<input class="input" readonly value="{{ $shorten->shortenUrl() }}" title="Shorten Url">
 					</a>
 				</div>
 			</div>
@@ -48,164 +48,186 @@
 			</div>
 			<div class="field-body">
 				<div class="field">
-					<a href="{{ $basicInfo['destinationUrl'] }}" class="control is-expanded" target="_blank">
-						<input class="input" type="text" readonly value="{{ $basicInfo['destinationUrl'] }}" title="Destintation Url">
+					<a href="{{ $shorten->url }}" class="control is-expanded" target="_blank">
+						<input class="input" type="text" readonly value="{{ $shorten->url }}" title="Destination Url">
 					</a>
 				</div>
 			</div>
 		</div>
-
-		{{-- Range Tabs --}}
-		<div class="columns">
-			<div class="column">
-				<div class="tabs is-centered is-toggle">
-				  <ul>
-				    <li @if($activeTab == 'all') class="is-active" @endif>
-				      <a href="{{ action('ShortenController@stats', $basicInfo['id']) }}">
-				        <span class="icon is-small"><i class="fa fa-calendar"></i></span>
-				        <span>All the time</span>
-				      </a>
-				    </li>
-				    <li @if($activeTab == '24h') class="is-active" @endif>
-				      <a href="{{ action('ShortenController@stats', ['id' => $basicInfo['id'], 'range' => '24h']) }}">
-				        <span class="icon is-small"><i class="fa fa-circle-thin"></i></span>
-				        <span>24 hours</span>
-				      </a>
-				    </li>
-				    <li @if($activeTab == '48h') class="is-active" @endif>
-				      <a href="{{ action('ShortenController@stats', ['id' => $basicInfo['id'], 'range' => '48h']) }}">
-				        <span class="icon is-small"><i class="fa fa-angle-left"></i></span>
-				        <span>48 hours</span>
-				      </a>
-				    </li>
-				    <li @if($activeTab == 'week') class="is-active" @endif>
-				      <a href="{{ action('ShortenController@stats', ['id' => $basicInfo['id'], 'range' => 'week']) }}">
-				        <span class="icon is-small"><i class="fa fa-angle-double-left"></i></span>
-				        <span>1 week</span>
-				      </a>
-				    </li>
-				    <li @if($activeTab == 'month') class="is-active" @endif>
-				      <a href="{{ action('ShortenController@stats', ['id' => $basicInfo['id'], 'range' => 'month']) }}">
-				        <span class="icon is-small"><i class="fa fa-angle-double-left"></i><i class="fa fa-angle-double-left"></i></span>
-				        <span>1 month</span>
-				      </a>
-				    </li>
-				    <li @if($activeTab == 'custom') class="is-active" @endif>
-				    	<a href="#" onclick="hideShowCustomRange()" id="customRangeBtn">
-					        <span class="icon is-small"><i class="fa fa-arrows-h"></i></span>
-					        <span>Cusom range</span>
-				    	</a>
-				    </li>
-				  </ul>
-				</div>
-			</div>
-		</div>
-
-		{{-- Custom Range Form --}}
-		<div class="columns is-hidden" id="customRange">
-			<div class="column is-offset-4">
-                <form class="field has-addons" action="{{ url()->current() }}">
-                    <div class="control">
-                        <input class="input" placeholder="From" id="from-datepicker" name="from">
-                    </div>
-                    <div class="control">
-                        <input class="input" placeholder="To" id="to-datepicker" name="to">
-                    </div>
-                    <div class="control">
-                        <input type="hidden" name="range" value="custom">
-                        <button class="button is-info">
-                            Filter
-                        </button>
-                    </div>
-                </form>
-			</div>
-		</div>
 	</div>
 
-	<div class="container" style="margin-top: 30px;"> <!-- todo: remove -->
-        <ul class="columns">
-            <li class="column is-2"><b>Operating System</b></li>
-            <li class="column is-2"><b>Browser</b></li>
-            <li class="column is-4"><b>Country</b></li>
-            <li class="column is-4"><b>Referer</b></li>
-        </ul>
-
-        <div class="columns">
-            <div class="column is-2">
-                {{-- Platform Stats --}}
-                @if($statistics['platforms']['data'] != null)
-                    @foreach($statistics['platforms']['data'] as $key => $value)
-                        <div>
-                            <div class="columns">
-                                <div class="column">
-                                    <span class="tag is-black">{{ $key }}</span>
-                                </div>
-                                <div class="column">
-                                    <span class="tag is-light">{{ $value }} [{{ $statistics['platforms']['percent'][$key] }}%]</span>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                @endif
-            </div>
-            {{-- Browser Stats --}}
-            <div class="column is-2">
-                @if($statistics['browsers']['data'] != null)
-                    @foreach($statistics['browsers']['data'] as $key => $value)
-                        <div>
-                            <div class="columns">
-                                <div class="column">
-                                    <span class="tag is-black">{{ $key }}</span>
-                                </div>
-                                <div class="column">
-                                    <span class="tag is-light">{{ $value }} [{{ $statistics['browsers']['percent'][$key] }}%]</span>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                @endif
-            </div>
-            {{-- Country Stats --}}
-            <div class="column is-4">
-                @if($statistics['countries']['data'] != null)
-                    @foreach($statistics['countries']['data'] as $key => $value)
-                        <div>
-                            <div class="columns">
-                                <div class="column">
-                                    <span class="tag is-black"><span class="flag-icon flag-icon-{{ strtolower(convertCountryToIso($key)) }}"></span>&nbsp{{ $key }}</span>
-                                </div>
-                                <div class="column">
-                                    <span class="tag is-light">{{ $value }} [{{ $statistics['countries']['percent'][$key] }}%]</span>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                @endif
-            </div>
-            {{-- Referer Stats --}}
-            <div class="column is-4">
-                @if($statistics['referers']['data'] != null)
-                    @foreach($statistics['referers']['data'] as $key => $value)
-                        <div>
-                            <div class="columns">
-                                <div class="column">
-                                    <span class="tag is-black">
-                                    @if($key == false)
-                                        (no referer)
-                                    @else
-                                        <abbr title="{{ $key }}"><a href="{{ $key }}" class="refererAnchor">{{ $key }}</a></abbr>
-                                    @endif
-                                    </span>
-                                </div>
-                                <div class="column">
-                                    <span class="tag is-light">{{ $value }} [{{ $statistics['referers']['percent'][$key] }}%]</span>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                @endif
+	{{-- Range Tabs --}}
+	<div class="columns" style="margin-top: 20px;"> {{-- todo: replace styling with something more 'human' xD --}}
+        <div class="column"> {{-- todo: set active class --}}
+            <div class="tabs is-centered is-toggle">
+              <ul>
+                <li @if(!isset($_GET['active'])) class="is-active" @endif>
+                  <a href="{{ action('ShortenController@stats', $shorten->slug) }}">
+                    <span class="icon is-small"><i class="fa fa-calendar"></i></span>
+                    <span>All the time</span>
+                  </a>
+                </li>
+                <li @if(isset($_GET['active']) && $_GET['active'] == '24h') class="is-active" @endif>
+                  <a href="{{ action('ShortenController@stats',
+                  [
+                  'id' => $shorten->slug,
+                  'from' => \Carbon\Carbon::now()->subDay()->toDateTimeString(),
+                  'to' => \Carbon\Carbon::now()->toDateTimeString(),
+                  'active' => '24h'
+                  ]) }}">
+                    <span class="icon is-small"><i class="fa fa-circle-thin"></i></span>
+                    <span>24 hours</span>
+                  </a>
+                </li>
+                <li @if(isset($_GET['active']) && $_GET['active'] == '48h') class="is-active" @endif>
+                  <a href="{{ action('ShortenController@stats',
+                  ['id' => $shorten->slug,
+                   'from' => \Carbon\Carbon::now()->subDays('2')->toDateTimeString(),
+                   'to' => \Carbon\Carbon::today()->toDateTimeString(),
+                   'active' => '48h'
+                  ]) }}">
+                    <span class="icon is-small"><i class="fa fa-angle-left"></i></span>
+                    <span>48 hours</span>
+                  </a>
+                </li>
+                <li @if(isset($_GET['active']) && $_GET['active'] == '1week') class="is-active" @endif>
+                  <a href="{{ action('ShortenController@stats',
+                  ['id' => $shorten->slug,
+                   'from' => \Carbon\Carbon::now()->subWeek()->toDateTimeString(),
+                   'to' => \Carbon\Carbon::today()->toDateTimeString(),
+                   'active' => '1week'
+                  ]) }}">
+                    <span class="icon is-small"><i class="fa fa-angle-double-left"></i></span>
+                    <span>1 week</span>
+                  </a>
+                </li>
+				  <li @if(isset($_GET['active']) && $_GET['active'] == '1month') class="is-active" @endif>
+					  <a href="{{ action('ShortenController@stats',
+					  ['id' => $shorten->slug,
+					   'from' => \Carbon\Carbon::now()->subMonth()->toDateTimeString(),
+					   'to' => \Carbon\Carbon::today()->toDateTimeString(),
+					   'active' => '1month'
+					  ]) }}">
+                    <span class="icon is-small"><i class="fa fa-angle-double-left"></i><i class="fa fa-angle-double-left"></i></span>
+                    <span>1 month</span>
+                  </a>
+                </li>
+                <li @if(isset($_GET['active']) && $_GET['active'] == 'custom') class="is-active" @endif>
+                    <a href="#" onclick="hideShowCustomRange()" id="customRangeBtn">
+                        <span class="icon is-small"><i class="fa fa-arrows-h"></i></span>
+                        <span>Cusom range</span>
+                    </a>
+                </li>
+              </ul>
             </div>
         </div>
+    </div>
+
+	{{-- Custom Range Form --}}
+	<div class="columns is-hidden" id="customRange">
+        <div class="column is-offset-4">
+            <form class="field has-addons" action="{{ url()->current() }}">
+				<input type="hidden" value="custom" name="active">
+                <div class="control">
+                    <input class="input" placeholder="From" id="from-datepicker" name="from">
+                </div>
+                <div class="control">
+                    <input class="input" placeholder="To" id="to-datepicker" name="to">
+                </div>
+                <div class="control">
+                    <input type="hidden" name="range" value="custom">
+                    <button class="button is-info">
+                        Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+	<div class="container" style="margin-top: 30px;">
+		<ul class="columns">
+			<li class="column is-2"><b>Platform</b></li>
+			<li class="column is-2"><b>Browser</b></li>
+			<li class="column is-4"><b>Country</b></li>
+			<li class="column is-4"><b>Referer</b></li>
+		</ul>
+
+		<div class="columns">
+			<div class="column is-2">
+				{{-- Platform --}}
+                @if($stats->count() > 0)
+                    @foreach($stats->groupBy('platform') as $key => $value)
+                        <div>
+                            <div class="columns">
+                                <div class="column">
+                                    <span class="tag is-black">{{ $key }}</span>
+                                </div>
+                                <div class="column">
+                                    <span class="tag is-light is-pulled-right">{{ $value->count() }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
+
+			<div class="column is-2">
+				{{-- Browser --}}
+				@if($stats->count() > 0)
+					@foreach($stats->groupBy('browser') as $key => $value)
+						<div>
+							<div class="columns">
+								<div class="column">
+									<span class="tag is-black">{{ $key }}</span>
+								</div>
+								<div class="column">
+									<span class="tag is-light is-pulled-right">{{ $value->count() }}</span>
+								</div>
+							</div>
+						</div>
+					@endforeach
+				@endif
+			</div>
+
+			<div class="column is-4">
+				{{-- Country --}}
+				@if($stats->count() > 0)
+					@foreach($stats->groupBy('country_name') as $key => $value)
+						<div>
+							<div class="columns">
+								<div class="column">
+									<span class="tag is-black">
+										<span class="flag-icon flag-icon-{{ strtolower($shorten->getCountryCode($key)) }}"
+										></span>&nbsp;{{ $key }}</span>
+								</div>
+								<div class="column">
+									<span class="tag is-light">{{ $value->count() }}</span>
+								</div>
+							</div>
+						</div>
+					@endforeach
+				@endif
+			</div>
+
+			<div class="column is-4">
+				{{-- Http Referer --}}
+				@if($stats->count() > 0)
+					@foreach($stats->groupBy('http_referer') as $key => $value)
+						<div>
+							<div class="columns">
+								<div class="column referer-col">
+									<span class="tag is-black"><a href="{{ $key }}"><abbr title="{{ $key }}">{{ $key }}</abbr></a></span>
+								</div>
+								<div class="column">
+									<span class="tag is-light is-pulled-right">{{ $value->count() }}</span>
+								</div>
+							</div>
+						</div>
+					@endforeach
+				@endif
+			</div>
+		</div>
 	</div>
 @endsection
 
@@ -213,8 +235,15 @@
 	<script type="text/javascript">
 		 function hideShowCustomRange()
 		 {
-			 customRange = document.getElementById('customRange');
-			 customRange.classList.toggle('is-hidden');
+			 let customRange = document.getElementById('customRange')
+			 customRange.classList.toggle('is-hidden')
 		 }
+
+		 $('.referer-col span a abbr').each(function () {
+			let value = $(this).text()
+			let length = 50
+			let trimmedValue = value.substring(0, length)
+			$(this).text(trimmedValue + ' [...]')
+		 })
 	</script>
 @endsection
