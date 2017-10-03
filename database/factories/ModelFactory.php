@@ -23,14 +23,28 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->define(App\Url::class, function (Faker\Generator $faker) {
+   return [
+       'slug' => str_random(6),
+       'url' => $faker->url,
+       'is_private' => $faker->randomElement([true, false])
+   ];
+});
+
 $factory->define(App\UrlStat::class, function (Faker\Generator $faker) {
+    $country_names = ['Germany', 'Italy', 'France', 'United Kingdom', 'Russia'];
+    $country_codes = ['DE', 'IT', 'FR', 'GB', 'RU'];
+
+    $rand_index = array_rand($country_names);
     return [
-       'url_id' => $faker->randomElement([12, 11, 10, 9, 8, 7]),
-       'platform' => $faker->randomElement(['Windows', 'Macintosh', 'Linux', 'iPhone']),
-       'browser' => $faker->randomElement(['Chrome', 'Mozilla Firefox', 'Internet Explorer']),
+       'url_id' => function() {
+            return factory('App\Url')->create()->id;
+       },
+       'platform' => $faker->randomElement(['Windows', 'Linux', 'iPhone', 'Macintosh']),
+       'browser' => $faker->randomElement(['Internet Explorer', 'Opera', 'Safari', 'Google Chrome', 'Opera mini']),
        'ip' => $faker->ipv4,
-       'country_name' => $faker->country,
-       'country_code' => $faker->countryCode, /* todo: there is a different standard of country names than that in helpers.php */
+       'country_name' => $country_names[$rand_index],
+       'country_code' => $country_codes[$rand_index],
        'http_referer' => $faker->url,
        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
