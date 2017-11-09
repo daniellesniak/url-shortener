@@ -57,8 +57,8 @@
 	</div>
 
 	{{-- Range Tabs --}}
-	<div class="columns" style="margin-top: 20px;"> {{-- todo: replace styling with something more 'human' xD --}}
-        <div class="column"> {{-- todo: set active class --}}
+	<div class="columns" style="margin-top: 20px;">
+        <div class="column">
             <div class="tabs is-centered is-toggle">
               <ul>
                 <li @if(!isset($_GET['active'])) class="is-active" @endif>
