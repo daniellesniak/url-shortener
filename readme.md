@@ -32,6 +32,6 @@ php artisan migrate
 - [jQuery UI datepicker](http://jqueryui.com/datepicker/)
 
 ## Screenshots
-![Home Page Screenshot](http://i.imgur.com/gBm1zmv.png)
+![Home Page Screenshot](https://i.imgur.com/CHQ51W3.png)
 ![Statistics Page](http://i.imgur.com/R48SbDW.png)
 ![Shorten Page](http://i.imgur.com/kADihfD.png)
