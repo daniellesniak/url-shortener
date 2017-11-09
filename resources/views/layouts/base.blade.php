@@ -2,6 +2,8 @@
 <html>
 	<head>
 		<title>{{ getenv('APP_TITLE') }} - @yield('title')</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 		
 		<!-- Bulma CSS -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.1/css/bulma.min.css">
